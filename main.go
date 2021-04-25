@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"textlooker-backend/controllers"
@@ -19,7 +18,6 @@ func SetupRouter(runMode RunMode) *gin.Engine {
 	switch runMode {
 	case Development:
 		router = gin.Default()
-		fmt.Println("shashi")
 	case Test:
 		gin.SetMode(gin.ReleaseMode)
 		router = gin.New()
