@@ -18,7 +18,7 @@ func TestMain(m *testing.M) {
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.User{})
 	m.Run()
 }
-func TestPingRoute(t *testing.T) {
+func TestPostUser(t *testing.T) {
 	router := SetupRouter(Test)
 
 	data, _ := json.Marshal(map[string]string{
