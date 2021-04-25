@@ -9,9 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func setupRouter() *gin.Engine {
+func SetupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
+	// gin.SetMode(gin.ReleaseMode)
+	// r := gin.New()
 	r := gin.Default()
 
 	// Ping test
@@ -25,18 +27,17 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	models.ConnectDatabase()
 	argument := os.Args[1]
 
 	switch argument {
 	case "migrate":
-		models.ApplyMigrations()
+		models.ApplyMigrations("gorm")
+	case "testdbsetup":
+		models.ApplyMigrations("gorm_test")
 	case "run":
-		r := setupRouter()
+		models.ConnectDatabase("gorm")
+		r := SetupRouter()
 		r.Run(":8080")
-	case "test":
-		models.NewUser("sherfin@04.com", "hellohell")
-
 	}
 
 }
