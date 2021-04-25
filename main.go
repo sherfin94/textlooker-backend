@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"textlooker-backend/controllers"
@@ -9,21 +10,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
-	// gin.SetMode(gin.ReleaseMode)
-	// r := gin.New()
-	r := gin.Default()
+type RunMode uint8
+
+const Production, Development, Test = 1, 2, 3
+
+func SetupRouter(runMode RunMode) *gin.Engine {
+	var router *gin.Engine
+	switch runMode {
+	case Development:
+		router = gin.Default()
+		fmt.Println("shashi")
+	case Test:
+		gin.SetMode(gin.ReleaseMode)
+		router = gin.New()
+	case Production:
+		router = gin.New()
+	}
 
 	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
+	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 
-	r.POST("/users", controllers.PostUser)
+	router.POST("/users", controllers.PostUser)
 
-	return r
+	return router
 }
 
 func main() {
@@ -36,7 +47,7 @@ func main() {
 		models.ApplyMigrations("gorm_test")
 	case "run":
 		models.ConnectDatabase("gorm")
-		r := SetupRouter()
+		r := SetupRouter(Development)
 		r.Run(":8080")
 	}
 

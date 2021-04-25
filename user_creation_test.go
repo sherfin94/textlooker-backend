@@ -19,7 +19,7 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 func TestPingRoute(t *testing.T) {
-	router := SetupRouter()
+	router := SetupRouter(Test)
 
 	data, _ := json.Marshal(map[string]string{
 		"password": "hellosjkfio",
