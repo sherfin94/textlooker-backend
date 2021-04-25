@@ -5,18 +5,20 @@ import (
 	"gorm.io/gorm"
 )
 
+var Database *gorm.DB
+
 func ConnectDatabase() *gorm.DB {
 	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Kolkata"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var err error
+	Database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		panic("Could not connect to database")
 	}
 
-	return db
+	return Database
 }
 
 func ApplyMigrations() error {
-	db := ConnectDatabase()
-	return db.AutoMigrate(&User{})
+	return Database.AutoMigrate(&User{})
 }

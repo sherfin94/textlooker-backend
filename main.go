@@ -25,6 +25,7 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+	models.ConnectDatabase()
 	argument := os.Args[1]
 
 	switch argument {

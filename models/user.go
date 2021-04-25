@@ -28,8 +28,7 @@ func NewUser(email string, password string) (*User, error) {
 		user.EncryptedPassword = string(hashedPassword)
 	}
 
-	db := ConnectDatabase()
-	result := db.Create(user)
+	result := Database.Create(user)
 
 	return user, result.Error
 }
