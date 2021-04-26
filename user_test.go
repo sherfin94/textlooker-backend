@@ -1,40 +1,20 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"net/http"
-	"net/http/httptest"
 	"testing"
-	"textlooker-backend/models"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func TestMain(m *testing.M) {
-	models.ConnectDatabase("gorm_test")
-	models.Database.Unscoped().Session(
-		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.User{})
-	m.Run()
-}
 func TestPostUser(t *testing.T) {
-	router := SetupRouter(Test)
 
-	data, _ := json.Marshal(map[string]string{
+	data := map[string]interface{}{
 		"password": "hellosjkfio",
 		"email":    "Tfff@example.com",
-	})
+	}
 
-	postBody := bytes.NewBuffer(data)
+	response, code := Post("/users", data)
 
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/users", postBody)
-	router.ServeHTTP(w, req)
-
-	var response map[string]string
-	json.Unmarshal(w.Body.Bytes(), &response)
-
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, response["status"], "User created")
+	assert.Equal(t, 200, code)
+	assert.Equal(t, "User created", response["status"])
 }
