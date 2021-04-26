@@ -43,6 +43,8 @@ func TestMain(m *testing.M) {
 	models.ConnectDatabase("gorm_test")
 	models.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.User{})
+	models.Database.Unscoped().Session(
+		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.UserRegistration{})
 
 	router = SetupRouter(Test)
 	m.Run()

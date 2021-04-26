@@ -31,6 +31,7 @@ func SetupRouter(runMode RunMode) *gin.Engine {
 	})
 
 	router.POST("/users", controllers.PostUser)
+	router.POST("/user_registrations", controllers.PostUserRegistration)
 
 	return router
 }

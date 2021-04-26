@@ -23,5 +23,6 @@ func ConnectDatabase(databaseName string) *gorm.DB {
 
 func ApplyMigrations(databaseName string) error {
 	ConnectDatabase(databaseName)
-	return Database.AutoMigrate(&User{})
+	Database.AutoMigrate(&User{})
+	return Database.AutoMigrate(&UserRegistration{})
 }
