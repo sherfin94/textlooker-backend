@@ -28,7 +28,7 @@ func PostUserRegistration(context *gin.Context) {
 		return
 	} else {
 		if !deployment.IsTest(context) {
-			mailer.SendMail(
+			go mailer.SendMail(
 				"TextLooker",
 				"hi@textlooker.com",
 				userRegistration.Email,

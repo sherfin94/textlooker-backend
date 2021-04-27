@@ -2,15 +2,19 @@ package main
 
 import (
 	"testing"
+	"textlooker-backend/models"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPostUser(t *testing.T) {
 
+	userRegistration, _ := models.NewUserRegistration("Tfff@example.com", "hellosjkfio")
+
 	data := map[string]interface{}{
-		"password": "hellosjkfio",
-		"email":    "Tfff@example.com",
+		"password":          "hellosjkfio",
+		"email":             "Tfff@example.com",
+		"verificationToken": userRegistration.VerificationToken,
 	}
 
 	response, code := Post("/users", data)
