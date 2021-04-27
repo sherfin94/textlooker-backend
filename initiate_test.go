@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"textlooker-backend/deployment"
 	"textlooker-backend/models"
 
 	"github.com/gin-gonic/gin"
@@ -46,6 +47,6 @@ func TestMain(m *testing.M) {
 	models.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.UserRegistration{})
 
-	router = SetupRouter(Test)
+	router = SetupRouter(deployment.Test)
 	m.Run()
 }

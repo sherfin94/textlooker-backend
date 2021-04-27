@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"textlooker-backend/deployment"
+	"textlooker-backend/mailer"
 	"textlooker-backend/models"
 
 	"github.com/gin-gonic/gin"
@@ -19,9 +22,21 @@ func PostUserRegistration(context *gin.Context) {
 		return
 	}
 
-	if _, err := models.NewUser(userRegistration.Email, userRegistration.Password); err != nil {
+	if createdUserRegistration, err := models.NewUserRegistration(userRegistration.Email, userRegistration.Password); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		fmt.Println(err)
 		return
+	} else {
+		if !deployment.IsTest(context) {
+			mailer.SendMail(
+				"TextLooker",
+				"hi@textlooker.com",
+				userRegistration.Email,
+				userRegistration.Email,
+				"Verification token for Textlooker",
+				"Your verification token is "+createdUserRegistration.VerificationToken,
+			)
+		}
 	}
 
 	context.JSON(http.StatusOK, gin.H{"status": "User registration created"})

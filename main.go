@@ -4,26 +4,26 @@ import (
 	"net/http"
 	"os"
 	"textlooker-backend/controllers"
+	"textlooker-backend/deployment"
+	"textlooker-backend/middleware"
 	"textlooker-backend/models"
 
 	"github.com/gin-gonic/gin"
 )
 
-type RunMode uint8
-
-const Production, Development, Test = 1, 2, 3
-
-func SetupRouter(runMode RunMode) *gin.Engine {
+func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	var router *gin.Engine
 	switch runMode {
-	case Development:
+	case deployment.Development:
 		router = gin.Default()
-	case Test:
+	case deployment.Test:
 		gin.SetMode(gin.ReleaseMode)
 		router = gin.New()
-	case Production:
+	case deployment.Production:
 		router = gin.New()
 	}
+
+	router.Use(middleware.InitiateRunMode(runMode))
 
 	// Ping test
 	router.GET("/ping", func(c *gin.Context) {
@@ -46,7 +46,7 @@ func main() {
 		models.ApplyMigrations("gorm_test")
 	case "run":
 		models.ConnectDatabase("gorm")
-		r := SetupRouter(Development)
+		r := SetupRouter(deployment.Development)
 		r.Run(":8080")
 	}
 
