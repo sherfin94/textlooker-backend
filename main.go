@@ -50,7 +50,7 @@ func main() {
 	switch argument {
 	case "migrate":
 		models.ApplyMigrations("gorm")
-	case "testdbsetup":
+	case "migrate test":
 		models.ApplyMigrations("gorm_test")
 	case "run":
 		models.ConnectDatabase("gorm")
