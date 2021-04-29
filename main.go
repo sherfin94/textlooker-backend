@@ -25,6 +25,8 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	router.Use(middleware.InitiateRunMode(runMode))
 
+	authMiddleware := middleware.GenerateJWTAuthMiddleware()
+
 	// Ping test
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
@@ -32,6 +34,15 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	router.POST("/users", controllers.PostUser)
 	router.POST("/user_registrations", controllers.PostUserRegistration)
+	router.POST("/login", authMiddleware.LoginHandler)
+
+	auth := router.Group("/auth")
+	auth.Use(authMiddleware.MiddlewareFunc())
+
+	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
+	auth.GET("/hello", func(c *gin.Context) {
+		c.String(http.StatusOK, "Hey!!")
+	})
 
 	return router
 }
