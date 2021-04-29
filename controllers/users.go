@@ -28,7 +28,7 @@ func PostUser(context *gin.Context) {
 		return
 	}
 
-	if _, err := models.NewUser(user.Email, user.Password); err != nil {
+	if _, err := models.NewUser(user.Email, user.Password, userRegistration); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

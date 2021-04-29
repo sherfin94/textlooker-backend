@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"textlooker-backend/deployment"
 	"textlooker-backend/mailer"
@@ -11,8 +10,7 @@ import (
 )
 
 type UserRegistration struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Email string `json:"email" binding:"required"`
 }
 
 func PostUserRegistration(context *gin.Context) {
@@ -22,9 +20,8 @@ func PostUserRegistration(context *gin.Context) {
 		return
 	}
 
-	if createdUserRegistration, err := models.NewUserRegistration(userRegistration.Email, userRegistration.Password); err != nil {
+	if createdUserRegistration, err := models.NewUserRegistration(userRegistration.Email); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		fmt.Println(err)
 		return
 	} else {
 		if !deployment.IsTest(context) {

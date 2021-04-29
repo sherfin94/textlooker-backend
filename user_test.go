@@ -9,11 +9,11 @@ import (
 
 func TestPostUser(t *testing.T) {
 
-	userRegistration, _ := models.NewUserRegistration("Tfff@example.com", "hellosjkfio")
+	userRegistration, _ := models.NewUserRegistration("Tfff@example.com")
 
 	data := map[string]interface{}{
-		"password":          "hellosjkfio",
 		"email":             "Tfff@example.com",
+		"password":          "Abcd1432!",
 		"verificationToken": userRegistration.VerificationToken,
 	}
 
@@ -25,8 +25,7 @@ func TestPostUser(t *testing.T) {
 
 func TestPostUserRegistration(t *testing.T) {
 	data := map[string]interface{}{
-		"password": "hellosjkfio",
-		"email":    "Tfffex@ample.com",
+		"email": "Tfffex@ample.com",
 	}
 
 	response, code := Post("/user_registrations", data)
@@ -38,7 +37,8 @@ func TestPostUserRegistration(t *testing.T) {
 func TestPostLogin(t *testing.T) {
 	email := "test@test.com"
 	password := "myawesomepassword123"
-	models.NewUser(email, password)
+	userRegistration, _ := models.NewUserRegistration(email)
+	models.NewUser(email, password, *userRegistration)
 
 	data := map[string]interface{}{
 		"password": password,
