@@ -21,6 +21,7 @@ func Post(url string, data map[string]interface{}) (map[string]interface{}, int)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", url, postBody)
+	req.Header.Add("Content-Type", "application/json")
 	router.ServeHTTP(w, req)
 
 	var response map[string]interface{}
