@@ -40,9 +40,6 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	auth.Use(authMiddleware.MiddlewareFunc())
 
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
-	auth.GET("/hello", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hey!!")
-	})
 
 	return router
 }

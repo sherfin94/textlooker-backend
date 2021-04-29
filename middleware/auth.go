@@ -21,7 +21,7 @@ var identityKey string = "email"
 
 func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "test zone",
+		Realm:       "\"auth zone\"",
 		Key:         []byte(os.Getenv("JWT_SECRET_KEY")),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
@@ -34,12 +34,14 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 			}
 			return jwt.MapClaims{}
 		},
+
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &models.User{
 				Email: claims[identityKey].(string),
 			}
 		},
+
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVals login
 			var user models.User
@@ -60,30 +62,18 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 
 			return nil, jwt.ErrFailedAuthentication
 		},
+
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			return true
 		},
+
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
 				"code":    code,
 				"message": message,
 			})
 		},
-		// TokenLookup is a string in the form of "<source>:<name>" that is used
-		// to extract token from the request.
-		// Optional. Default value "header:Authorization".
-		// Possible values:
-		// - "header:<name>"
-		// - "query:<name>"
-		// - "cookie:<name>"
-		// - "param:<name>"
-		TokenLookup: "header: Authorization, query: token, cookie: jwt",
-		// TokenLookup: "query:token",
 
-		// TokenHeadName is a string in the header. Default value is "Bearer"
-		TokenHeadName: "Bearer",
-
-		// TimeFunc provides the current time. You can override it to use another time value. This is useful for testing or if your server uses a different time zone than your tokens.
 		TimeFunc: time.Now,
 	})
 
