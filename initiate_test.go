@@ -46,7 +46,7 @@ func Get(url string, token string) (map[string]interface{}, int) {
 }
 
 func TestMain(m *testing.M) {
-	database.ConnectDatabase("gorm_test")
+	database.ConnectDatabase("gorm_test", database.Silent)
 	CleanupDatabase()
 	router = SetupRouter(deployment.Test)
 	m.Run()

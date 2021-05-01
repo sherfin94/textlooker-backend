@@ -52,11 +52,11 @@ func main() {
 
 	switch argument {
 	case "migrate":
-		models.ApplyMigrations("gorm")
+		models.ApplyMigrations("gorm", database.Loud)
 	case "migrate-test":
-		models.ApplyMigrations("gorm_test")
+		models.ApplyMigrations("gorm_test", database.Loud)
 	case "run":
-		database.ConnectDatabase("gorm")
+		database.ConnectDatabase("gorm", database.OnlyErrors)
 		r := SetupRouter(deployment.Development)
 		r.Run(":8080")
 	}
