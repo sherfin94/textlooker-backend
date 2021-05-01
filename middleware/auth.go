@@ -17,7 +17,7 @@ type login struct {
 	Password string `json:"password" binding:"required"`
 }
 
-var identityKey string = "email"
+var identityKey string = "id"
 
 func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
@@ -29,7 +29,7 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(models.User); ok {
 				return jwt.MapClaims{
-					identityKey: v.Email,
+					identityKey: v.ID,
 				}
 			}
 			return jwt.MapClaims{}
@@ -37,9 +37,9 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
-			return &models.User{
-				Email: claims[identityKey].(string),
-			}
+			var user models.User
+			models.Database.First(&user, claims[identityKey])
+			return &user
 		},
 
 		Authenticator: func(c *gin.Context) (interface{}, error) {

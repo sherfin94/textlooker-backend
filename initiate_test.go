@@ -15,13 +15,15 @@ import (
 
 var router *gin.Engine
 
-func Post(url string, data map[string]interface{}) (map[string]interface{}, int) {
+func Post(url string, data map[string]interface{}, token string) (map[string]interface{}, int) {
 	marshalledData, _ := json.Marshal(data)
 	postBody := bytes.NewBuffer(marshalledData)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", url, postBody)
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+token)
+
 	router.ServeHTTP(w, req)
 
 	var response map[string]interface{}
@@ -30,9 +32,10 @@ func Post(url string, data map[string]interface{}) (map[string]interface{}, int)
 	return response, w.Code
 }
 
-func Get(url string) (map[string]interface{}, int) {
+func Get(url string, token string) (map[string]interface{}, int) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("Authorization", "Bearer "+token)
 	router.ServeHTTP(w, req)
 
 	var response map[string]interface{}
@@ -43,11 +46,16 @@ func Get(url string) (map[string]interface{}, int) {
 
 func TestMain(m *testing.M) {
 	models.ConnectDatabase("gorm_test")
+	CleanupDatabase()
+	router = SetupRouter(deployment.Test)
+	m.Run()
+}
+
+func CleanupDatabase() {
+	models.Database.Unscoped().Session(
+		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Source{})
 	models.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.User{})
 	models.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.UserRegistration{})
-
-	router = SetupRouter(deployment.Test)
-	m.Run()
 }

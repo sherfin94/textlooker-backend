@@ -41,6 +41,8 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
 
+	auth.POST("/sources", controllers.PostSource)
+
 	return router
 }
 
@@ -50,7 +52,7 @@ func main() {
 	switch argument {
 	case "migrate":
 		models.ApplyMigrations("gorm")
-	case "migrate test":
+	case "migrate-test":
 		models.ApplyMigrations("gorm_test")
 	case "run":
 		models.ConnectDatabase("gorm")
