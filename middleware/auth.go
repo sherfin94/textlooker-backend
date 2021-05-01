@@ -17,7 +17,7 @@ type login struct {
 	Password string `json:"password" binding:"required"`
 }
 
-var identityKey string = "id"
+var identityKey string = "user"
 
 func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
