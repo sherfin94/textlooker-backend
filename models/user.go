@@ -1,6 +1,8 @@
 package models
 
 import (
+	"textlooker-backend/database"
+
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -41,6 +43,6 @@ func NewUser(email string, password string, userRegistration UserRegistration) (
 		UserRegistration:  userRegistration,
 	}
 
-	result := Database.Create(user)
+	result := database.Database.Create(user)
 	return user, result.Error
 }

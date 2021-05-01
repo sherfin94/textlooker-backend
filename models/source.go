@@ -1,6 +1,8 @@
 package models
 
 import (
+	"textlooker-backend/database"
+
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
@@ -29,6 +31,6 @@ func NewSource(name string, user *User) (*Source, error) {
 		User: user,
 	}
 
-	result := Database.Create(source)
+	result := database.Database.Create(source)
 	return source, result.Error
 }

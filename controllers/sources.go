@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"textlooker-backend/models"
 
@@ -21,11 +20,9 @@ func PostSource(context *gin.Context) {
 	}
 
 	user, _ := context.Get("user")
-	fmt.Println(user)
 
 	if _, err := models.NewSource(source.Name, user.(*models.User)); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		fmt.Println(err)
 		return
 	}
 

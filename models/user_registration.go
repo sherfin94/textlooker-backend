@@ -1,6 +1,7 @@
 package models
 
 import (
+	"textlooker-backend/database"
 	"textlooker-backend/util"
 
 	"github.com/go-playground/validator/v10"
@@ -29,7 +30,7 @@ func NewUserRegistration(email string) (*UserRegistration, error) {
 		VerificationToken: util.GenerateToken(),
 	}
 
-	result := Database.Create(userRegistration)
+	result := database.Database.Create(userRegistration)
 
 	return userRegistration, result.Error
 }

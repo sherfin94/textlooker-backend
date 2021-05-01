@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"textlooker-backend/database"
 	"textlooker-backend/models"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,7 @@ func PostUser(context *gin.Context) {
 	}
 
 	var userRegistration models.UserRegistration
-	models.Database.Where("email = ?", user.Email).First(&userRegistration)
+	database.Database.Where("email = ?", user.Email).First(&userRegistration)
 
 	if userRegistration.VerificationToken != user.VerificationToken {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Verifcation token is wrong"})

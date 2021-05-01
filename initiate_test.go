@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"textlooker-backend/database"
 	"textlooker-backend/deployment"
 	"textlooker-backend/models"
 
@@ -45,17 +46,17 @@ func Get(url string, token string) (map[string]interface{}, int) {
 }
 
 func TestMain(m *testing.M) {
-	models.ConnectDatabase("gorm_test")
+	database.ConnectDatabase("gorm_test")
 	CleanupDatabase()
 	router = SetupRouter(deployment.Test)
 	m.Run()
 }
 
 func CleanupDatabase() {
-	models.Database.Unscoped().Session(
+	database.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Source{})
-	models.Database.Unscoped().Session(
+	database.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.User{})
-	models.Database.Unscoped().Session(
+	database.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.UserRegistration{})
 }

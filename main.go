@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"textlooker-backend/controllers"
+	"textlooker-backend/database"
 	"textlooker-backend/deployment"
 	"textlooker-backend/middleware"
 	"textlooker-backend/models"
@@ -55,7 +56,7 @@ func main() {
 	case "migrate-test":
 		models.ApplyMigrations("gorm_test")
 	case "run":
-		models.ConnectDatabase("gorm")
+		database.ConnectDatabase("gorm")
 		r := SetupRouter(deployment.Development)
 		r.Run(":8080")
 	}

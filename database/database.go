@@ -1,4 +1,4 @@
-package models
+package database
 
 import (
 	"fmt"
@@ -22,14 +22,4 @@ func ConnectDatabase(databaseName string) *gorm.DB {
 	}
 
 	return Database
-}
-
-func ApplyMigrations(databaseName string) error {
-	ConnectDatabase(databaseName)
-
-	return Database.AutoMigrate(
-		&User{},
-		&UserRegistration{},
-		&Source{},
-	)
 }

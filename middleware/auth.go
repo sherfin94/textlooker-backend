@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"textlooker-backend/database"
 	"textlooker-backend/models"
 	"time"
 
@@ -38,7 +39,7 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			var user models.User
-			models.Database.First(&user, claims[identityKey])
+			database.Database.First(&user, claims[identityKey])
 			return &user
 		},
 
@@ -52,7 +53,7 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 			email := loginVals.Email
 			password := loginVals.Password
 
-			result := models.Database.Where("email = ?", email).First(&user)
+			result := database.Database.Where("email = ?", email).First(&user)
 
 			if errors.Is(result.Error, nil) {
 				err := bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword), []byte(password))
