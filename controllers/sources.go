@@ -21,10 +21,13 @@ func PostSource(context *gin.Context) {
 
 	user, _ := context.Get("user")
 
-	if _, err := models.NewSource(source.Name, user.(*models.User)); err != nil {
+	if source, err := models.NewSource(source.Name, user.(*models.User)); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	} else {
+		context.JSON(http.StatusOK, gin.H{
+			"status":   "Source created",
+			"sourceID": source.ID,
+		})
 	}
-
-	context.JSON(http.StatusOK, gin.H{"status": "Source created"})
 }

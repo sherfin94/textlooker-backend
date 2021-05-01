@@ -32,6 +32,11 @@ func (suite *SourceTestSuite) SetupTest() {
 func (suite *SourceTestSuite) CleanupTest() {
 	CleanupDatabase()
 }
+
+func TestSourceTestSuite(t *testing.T) {
+	suite.Run(t, new(SourceTestSuite))
+}
+
 func (suite *SourceTestSuite) TestPostSource() {
 	data := map[string]interface{}{
 		"name": "My source name",
@@ -40,11 +45,8 @@ func (suite *SourceTestSuite) TestPostSource() {
 
 	assert.Equal(suite.T(), 200, code)
 	assert.Equal(suite.T(), "Source created", response["status"])
+	assert.NotNil(suite.T(), response["sourceID"])
 
 	_, code = Post("/auth/sources", data, suite.Token)
 	assert.NotEqual(suite.T(), 200, code)
-}
-
-func TestSourceTestSuite(t *testing.T) {
-	suite.Run(t, new(SourceTestSuite))
 }
