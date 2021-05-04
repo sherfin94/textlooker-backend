@@ -43,6 +43,8 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
 
 	auth.POST("/sources", controllers.PostSource)
+	auth.GET("/sources", controllers.GetSources)
+	auth.DELETE("/sources/:sourceID", controllers.DeleteSource)
 
 	return router
 }

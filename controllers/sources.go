@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"textlooker-backend/database"
 	"textlooker-backend/models"
 
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,46 @@ func PostSource(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"status":   "Source created",
 			"sourceID": source.ID,
+		})
+	}
+}
+
+func GetSources(context *gin.Context) {
+	var sources []models.Source
+	var result []map[string]interface{}
+
+	user, _ := context.Get("user")
+	database.Database.Where("user_id = ?", user.(*models.User).ID).Find(&sources)
+
+	for _, source := range sources {
+		result = append(result, map[string]interface{}{
+			"name": source.Name,
+			"id":   source.ID,
+		})
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"sources": result,
+	})
+}
+
+func DeleteSource(context *gin.Context) {
+	source_id := context.Param("sourceID")
+	var source models.Source
+
+	user, _ := context.Get("user")
+	result := database.Database.Where("user_id = ? AND id = ?", user.(*models.User).ID, source_id).Find(&source)
+
+	if result.Error == nil {
+
+		database.Database.Delete(&source)
+		context.JSON(http.StatusOK, gin.H{
+			"status": "source deleted",
+		})
+	} else {
+		context.JSON(http.StatusPreconditionFailed, gin.H{
+			"status": "source could not be deleted",
+			"error":  result.Error,
 		})
 	}
 }

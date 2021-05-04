@@ -45,6 +45,18 @@ func Get(url string, token string) (map[string]interface{}, int) {
 	return response, w.Code
 }
 
+func Delete(url string, token string) (map[string]interface{}, int) {
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("DELETE", url, nil)
+	req.Header.Add("Authorization", "Bearer "+token)
+	router.ServeHTTP(w, req)
+
+	var response map[string]interface{}
+	json.Unmarshal(w.Body.Bytes(), &response)
+
+	return response, w.Code
+}
+
 func TestMain(m *testing.M) {
 	database.ConnectDatabase("gorm_test", database.Silent)
 	CleanupDatabase()

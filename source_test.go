@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"testing"
+	"textlooker-backend/database"
 	"textlooker-backend/models"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"gorm.io/gorm"
 )
 
 type SourceTestSuite struct {
@@ -15,7 +18,8 @@ type SourceTestSuite struct {
 	Token            string
 }
 
-func (suite *SourceTestSuite) SetupTest() {
+func (suite *SourceTestSuite) SetupSuite() {
+
 	email, password := "test@test.com", "Abcd124!"
 	suite.UserRegistration, _ = models.NewUserRegistration(email)
 	suite.User, _ = models.NewUser(email, password, *suite.UserRegistration)
@@ -29,8 +33,13 @@ func (suite *SourceTestSuite) SetupTest() {
 	suite.Token = response["token"].(string)
 }
 
-func (suite *SourceTestSuite) CleanupTest() {
+func (suite *SourceTestSuite) CleanupSuite() {
 	CleanupDatabase()
+}
+
+func (suite *SourceTestSuite) BeforeTest(suiteName, testName string) {
+	database.Database.Unscoped().Session(
+		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Source{})
 }
 
 func TestSourceTestSuite(t *testing.T) {
@@ -49,4 +58,24 @@ func (suite *SourceTestSuite) TestPostSource() {
 
 	_, code = Post("/auth/sources", data, suite.Token)
 	assert.NotEqual(suite.T(), 200, code)
+}
+
+func (suite *SourceTestSuite) TestGetSource() {
+
+	source, _ := models.NewSource("My new source", suite.User)
+
+	response, code := Get("/auth/sources", suite.Token)
+
+	respondedSources := response["sources"].([]interface{})
+
+	assert.Equal(suite.T(), 200, code)
+	assert.Equal(suite.T(), float64(source.ID), respondedSources[0].(map[string]interface{})["id"])
+}
+
+func (suite *SourceTestSuite) TestDeleteSource() {
+	source, _ := models.NewSource("Another source", suite.User)
+
+	_, code := Delete("/auth/sources/"+fmt.Sprint(source.ID), suite.Token)
+
+	assert.Equal(suite.T(), 200, code)
 }

@@ -9,8 +9,8 @@ import (
 
 type Source struct {
 	gorm.Model
-	Name   string `gorm:"not null;unique" validate:"required"`
-	UserID int    `gorm:"not null;unique"`
+	Name   string `gorm:"not null" validate:"required"`
+	UserID int    `gorm:"not null"`
 	User   *User  `validate:"structonly"`
 }
 
@@ -32,5 +32,6 @@ func NewSource(name string, user *User) (*Source, error) {
 	}
 
 	result := database.Database.Create(source)
+
 	return source, result.Error
 }
