@@ -68,7 +68,6 @@ func DeleteSource(context *gin.Context) {
 	} else {
 		context.JSON(http.StatusPreconditionFailed, gin.H{
 			"status": "source could not be deleted",
-			"error":  result.Error,
 		})
 	}
 }
