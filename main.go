@@ -6,6 +6,7 @@ import (
 	"textlooker-backend/controllers"
 	"textlooker-backend/database"
 	"textlooker-backend/deployment"
+	"textlooker-backend/elastic"
 	"textlooker-backend/middleware"
 	"textlooker-backend/models"
 
@@ -61,6 +62,8 @@ func main() {
 		database.ConnectDatabase("gorm", database.OnlyErrors)
 		r := SetupRouter(deployment.Development)
 		r.Run(":8080")
+	case "elastic-test":
+		elastic.Initiate()
 	}
 
 }

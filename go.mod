@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/appleboy/gin-jwt/v2 v2.6.4
+	github.com/elastic/go-elasticsearch/v8 v8.0.0-20210429082631-bdab472a9cc7 // indirect
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/validator/v10 v10.5.0
 	github.com/leodido/go-urn v1.2.1 // indirect
