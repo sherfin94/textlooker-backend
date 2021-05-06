@@ -1,3 +1,19 @@
 elastic retry backoff
 bulk save of text
 convert user tests to a suite
+
+
+use separate es index for testing
+add end point for
+  * querying submitted text
+add ner processing
+add end point for
+  * querying by
+    * date
+    * entities
+    * sentiment
+add end point for
+  * aggregating over date by
+    * people
+    * organizations
+    * sentiment
