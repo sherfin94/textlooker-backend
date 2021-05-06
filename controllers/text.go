@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"textlooker-backend/database"
 	"textlooker-backend/models"
 	"time"
 
@@ -19,6 +20,7 @@ type Text struct {
 
 func PostText(context *gin.Context) {
 	var text Text
+	var source Source
 
 	if err := context.ShouldBindJSON(&text); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -28,6 +30,13 @@ func PostText(context *gin.Context) {
 	time, err := time.Parse(referenceTime, text.Time)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, _ := context.Get("user")
+	sourceSearchResult := database.Database.Where("user_id = ? and id = ?", user.(*models.User).ID, text.SourceID).Find(&source)
+	if sourceSearchResult.Error != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": sourceSearchResult.Error.Error()})
 		return
 	}
 

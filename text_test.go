@@ -52,4 +52,8 @@ func (suite *TextTestSuite) TestPostText() {
 
 	assert.Equal(suite.T(), 200, code)
 	assert.Equal(suite.T(), "Text saved", response["status"])
+
+	data["sourceID"] = 0
+	_, code = Post("/auth/text", data, suite.Token)
+	assert.Equal(suite.T(), 400, code)
 }
