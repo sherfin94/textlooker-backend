@@ -1,1 +1,2 @@
 elastic retry backoff
+bulk save of text

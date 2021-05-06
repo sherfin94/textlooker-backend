@@ -8,6 +8,7 @@ import (
 	"testing"
 	"textlooker-backend/database"
 	"textlooker-backend/deployment"
+	"textlooker-backend/elastic"
 	"textlooker-backend/models"
 
 	"github.com/gin-gonic/gin"
@@ -59,6 +60,7 @@ func Delete(url string, token string) (map[string]interface{}, int) {
 
 func TestMain(m *testing.M) {
 	database.ConnectDatabase("gorm_test", database.Silent)
+	elastic.Initiate()
 	CleanupDatabase()
 	router = SetupRouter(deployment.Test)
 	m.Run()
