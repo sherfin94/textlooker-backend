@@ -42,7 +42,7 @@ func TestTextTestSuite(t *testing.T) {
 
 func (suite *TextTestSuite) TestPostText() {
 	data := map[string]interface{}{
-		"content":  "My awesome new text",
+		"content":  "My awesome2 new text",
 		"author":   "Some person",
 		"time":     time.Now().Format("Jan 2 15:04:05 -0700 MST 2006"),
 		"sourceID": suite.Source.ID,

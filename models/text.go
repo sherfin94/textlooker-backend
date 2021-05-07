@@ -1,6 +1,7 @@
 package models
 
 import (
+	"os"
 	"textlooker-backend/elastic"
 	"time"
 
@@ -19,8 +20,11 @@ func NewText(content string, author string, time time.Time, sourceID int) (err e
 	validator := validator.New()
 	if err = validator.Struct(text); err != nil {
 		return err
-	} else {
-		elastic.Save("text", text)
 	}
+
+	if err := elastic.Save(os.Getenv("ELASTIC_INDEX_FOR_TEXT"), text); err != nil {
+		return err
+	}
+
 	return nil
 }
