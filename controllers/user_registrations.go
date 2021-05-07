@@ -24,7 +24,7 @@ func PostUserRegistration(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} else {
-		if !deployment.IsTest(context) {
+		if !deployment.IsTest() {
 			go mailer.SendMail(
 				"TextLooker",
 				"hi@textlooker.com",

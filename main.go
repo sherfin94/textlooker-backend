@@ -25,7 +25,7 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 		router = gin.New()
 	}
 
-	router.Use(middleware.InitiateRunMode(runMode))
+	deployment.CurrentRunMode = runMode
 
 	authMiddleware := middleware.GenerateJWTAuthMiddleware()
 
