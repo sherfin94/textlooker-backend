@@ -3,8 +3,8 @@ package middleware
 import (
 	"errors"
 	"log"
-	"os"
 	"textlooker-backend/database"
+	"textlooker-backend/deployment"
 	"textlooker-backend/models"
 	"time"
 
@@ -23,7 +23,7 @@ var identityKey string = "user"
 func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "\"auth zone\"",
-		Key:         []byte(os.Getenv("JWT_SECRET_KEY")),
+		Key:         []byte(deployment.GetEnv("JWT_SECRET_KEY")),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
 		IdentityKey: identityKey,

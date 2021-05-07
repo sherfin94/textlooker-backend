@@ -1,7 +1,7 @@
 package models
 
 import (
-	"os"
+	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
 	"time"
 
@@ -22,7 +22,7 @@ func NewText(content string, author string, time time.Time, sourceID int) (err e
 		return err
 	}
 
-	if err := elastic.Save(os.Getenv("ELASTIC_INDEX_FOR_TEXT"), text); err != nil {
+	if err := elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT"), text); err != nil {
 		return err
 	}
 
