@@ -3,7 +3,7 @@ bulk save of text
 convert user tests to a suite
 
 
-use separate es index for testing
+use separate es index for testing : done
 add end point for
   * querying submitted text
 add ner processing

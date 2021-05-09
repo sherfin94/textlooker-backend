@@ -9,12 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const referenceTime = "Jan 2 15:04:05 -0700 MST 2006"
+const referenceDate = "Jan 2 15:04:05 -0700 MST 2006"
 
 type Text struct {
 	Content  string `json:"content" validate:"required"`
 	Author   string `json:"author" validate:"required"`
-	Time     string `json:"time" validate:"required"`
+	Date     string `json:"date" validate:"required"`
 	SourceID int    `json:"sourceID" validate:"required"`
 }
 
@@ -27,7 +27,7 @@ func PostText(context *gin.Context) {
 		return
 	}
 
-	time, err := time.Parse(referenceTime, text.Time)
+	time, err := time.Parse(referenceDate, text.Date)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -40,9 +40,11 @@ func PostText(context *gin.Context) {
 		return
 	}
 
-	if err := models.NewText(text.Content, text.Author, time, text.SourceID); err != nil {
+	if text, err := models.NewText(text.Content, text.Author, time, text.SourceID); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	} else {
+		go models.NewAnalyzedText(text)
 	}
 
 	context.JSON(http.StatusOK, gin.H{
