@@ -21,12 +21,13 @@ func Initiate() {
 	}
 }
 
-func Save(index string, body interface{}) error {
+func Save(index string, body interface{}, ID string) (string, error) {
 	data, _ := json.Marshal(body)
 	request := esapi.IndexRequest{
-		Index:   index,
-		Body:    strings.NewReader(string(data)),
-		Refresh: "true",
+		Index:      index,
+		Body:       strings.NewReader(string(data)),
+		Refresh:    "true",
+		DocumentID: ID,
 	}
 
 	response, err := request.Do(context.Background(), Client)
@@ -39,8 +40,13 @@ func Save(index string, body interface{}) error {
 	if response.IsError() {
 		log.Printf("[%s] Error indexing document", response.Status())
 		log.Println(response)
-		return errors.New("could not index document")
+		return "", errors.New("could not index document")
 	}
 
-	return nil
+	var responseData map[string]interface{}
+	if err := json.NewDecoder(response.Body).Decode(&responseData); err != nil {
+		log.Printf("Error parsing the response body: %s", err)
+		return "", err
+	}
+	return responseData["_id"].(string), nil
 }

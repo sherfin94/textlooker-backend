@@ -9,6 +9,7 @@ import (
 )
 
 type Text struct {
+	ID       string    `json:"-"`
 	Content  string    `json:"content" validate:"required"`
 	Author   string    `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
@@ -22,7 +23,7 @@ func NewText(content string, author string, date time.Time, sourceID int) (text 
 		return text, err
 	}
 
-	if err := elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT"), text); err != nil {
+	if text.ID, err = elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT"), text, ""); err != nil {
 		return text, err
 	}
 

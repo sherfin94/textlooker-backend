@@ -38,7 +38,7 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 		GPE:      gpe,
 	}
 
-	err = elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT"), analyzedText)
+	_, err = elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT"), analyzedText, text.ID)
 
 	return analyzedText, err
 }
