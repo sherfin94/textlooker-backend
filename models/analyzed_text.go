@@ -39,6 +39,10 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 	}
 
 	_, err = elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT"), analyzedText, text.ID)
+	if err == nil {
+		text.Analyzed = true
+		elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT"), text, text.ID)
+	}
 
 	return analyzedText, err
 }

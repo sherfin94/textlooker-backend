@@ -14,10 +14,11 @@ type Text struct {
 	Author   string    `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
 	SourceID int       `json:"source_id" validate:"required"`
+	Analyzed bool      `json:"analyzed"`
 }
 
 func NewText(content string, author string, date time.Time, sourceID int) (text Text, err error) {
-	text = Text{Content: content, Author: author, Date: date, SourceID: sourceID}
+	text = Text{Content: content, Author: author, Date: date, SourceID: sourceID, Analyzed: false}
 	validator := validator.New()
 	if err = validator.Struct(text); err != nil {
 		return text, err
