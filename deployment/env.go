@@ -18,6 +18,7 @@ func InitiateEnv() {
 				"JWT_SECRET_KEY":                  "JWT_SECRET_KEY",
 				"ELASTIC_INDEX_FOR_TEXT":          "ELASTIC_INDEX_FOR_TEXT_TEST",
 				"ELASTIC_INDEX_FOR_ANALYZED_TEXT": "ELASTIC_INDEX_FOR_ANALYZED_TEXT_TEST",
+				"ELASTIC_URL":                     "ELASTIC_URL",
 			}
 		}
 
@@ -28,6 +29,7 @@ func InitiateEnv() {
 				"JWT_SECRET_KEY":                  "JWT_SECRET_KEY",
 				"ELASTIC_INDEX_FOR_TEXT":          "ELASTIC_INDEX_FOR_TEXT",
 				"ELASTIC_INDEX_FOR_ANALYZED_TEXT": "ELASTIC_INDEX_FOR_ANALYZED_TEXT",
+				"ELASTIC_URL":                     "ELASTIC_URL",
 			}
 		}
 
@@ -38,6 +40,7 @@ func InitiateEnv() {
 				"JWT_SECRET_KEY":                  "JWT_SECRET_KEY",
 				"ELASTIC_INDEX_FOR_TEXT":          "ELASTIC_INDEX_FOR_TEXT",
 				"ELASTIC_INDEX_FOR_ANALYZED_TEXT": "ELASTIC_INDEX_FOR_ANALYZED_TEXT",
+				"ELASTIC_URL":                     "ELASTIC_URL",
 			}
 		}
 	}

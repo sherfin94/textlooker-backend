@@ -19,6 +19,9 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	deployment.CurrentRunMode = runMode
 	deployment.InitiateEnv()
 
+	elastic.Initiate()
+	database.ConnectDatabase("gorm", database.OnlyErrors)
+
 	switch runMode {
 	case deployment.Development:
 		router = gin.Default()
@@ -63,8 +66,6 @@ func main() {
 	case "migrate-test":
 		models.ApplyMigrations("gorm_test", database.Loud)
 	case "run":
-		elastic.Initiate()
-		database.ConnectDatabase("gorm", database.OnlyErrors)
 		r := SetupRouter(deployment.Development)
 		r.Run(":8080")
 	}
