@@ -57,3 +57,8 @@ func (suite *TextTestSuite) TestPostText() {
 	_, code = Post("/auth/text", data, suite.Token)
 	assert.Equal(suite.T(), 400, code)
 }
+
+func (suite *TextTestSuite) TestGetText() {
+	models.NewText("Pinarayi Vijayan is the chief minister of Kerala.", "Kyle Kulinski", time.Now(), int(suite.Source.ID))
+	models.GetTexts("*", "*", time.Now().Add(-3*time.Hour), time.Now().Add(time.Hour), int(suite.Source.ID))
+}

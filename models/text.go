@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+	"log"
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
 	"time"
@@ -29,4 +31,19 @@ func NewText(content string, author string, date time.Time, sourceID int) (text 
 	}
 
 	return text, nil
+}
+
+func GetTexts(content string, author string, dateStart time.Time, dateEnd time.Time, sourceID int) (texts []Text, err error) {
+	textQuery := elastic.NewTextQuery(content, author, dateStart, dateEnd, sourceID)
+
+	if err != nil {
+		log.Fatalln(err)
+		return texts, err
+	}
+	if result, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT")); err != nil {
+		log.Fatalln(err)
+	} else {
+		fmt.Println(result)
+	}
+	return texts, err
 }

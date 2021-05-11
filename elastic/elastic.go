@@ -50,3 +50,43 @@ func Save(index string, body interface{}, ID string) (string, error) {
 	}
 	return responseData["_id"].(string), nil
 }
+
+func Query(query TextQuery, index string) (result map[string]interface{}, err error) {
+
+	queryBuffer, err := query.Buffer()
+
+	if err != nil {
+		log.Fatalf("Error encoding query: %s", err)
+	}
+
+	var response *esapi.Response
+	response, err = Client.Search(
+		Client.Search.WithContext(context.Background()),
+		Client.Search.WithIndex(index),
+		Client.Search.WithBody(&queryBuffer),
+	)
+
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+	}
+
+	defer response.Body.Close()
+
+	if response.IsError() {
+		var e map[string]interface{}
+		if err = json.NewDecoder(response.Body).Decode(&e); err != nil {
+			log.Fatalf("Error parsing the response body: %s", err)
+		} else {
+
+			log.Fatalf("[%v]",
+				response,
+			)
+		}
+		return result, err
+	}
+
+	if err = json.NewDecoder(response.Body).Decode(&result); err != nil {
+		log.Fatalf("Error parsing the response body: %s", err)
+	}
+	return result, err
+}
