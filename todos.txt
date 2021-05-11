@@ -17,3 +17,7 @@ add end point for
     * people
     * organizations
     * sentiment
+
+
+Put user tests in a suite
+make tests parallel

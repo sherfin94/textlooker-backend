@@ -34,7 +34,9 @@ type Text struct {
 	Author   string    `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
 	SourceID int       `json:"source_id" validate:"required"`
-	Analyzed bool      `json:"analyzed"`
+	Analyzed bool      `json:"analyzed,omitempty"`
+	People   []string  `json:"people,omitempty"`
+	GPE      []string  `json:"gpe,omitempty"`
 }
 
 type shardsPart struct {
@@ -55,7 +57,6 @@ func ParseResult(body io.ReadCloser) (queryResult QueryResult, err error) {
 		log.Fatal(err)
 		return queryResult, err
 	}
-
 	return queryResult, err
 }
 

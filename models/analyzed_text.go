@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
 	"textlooker-backend/nlp"
@@ -8,6 +9,7 @@ import (
 )
 
 type AnalyzedText struct {
+	ID       string    `json:"-"`
 	Content  string    `json:"content" validate:"required"`
 	Author   string    `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
@@ -45,4 +47,33 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 	}
 
 	return analyzedText, err
+}
+
+func GetAnalyzedTexts(
+	searchText string, searchAuthor string,
+	startDate time.Time, endDate time.Time, sourceID int,
+) (analyzedTexts []AnalyzedText, err error) {
+
+	textQuery := elastic.NewTextQuery(searchText, searchAuthor, startDate, endDate, sourceID)
+
+	if err != nil {
+		log.Fatalln(err)
+		return analyzedTexts, err
+	}
+	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
+		log.Fatalln(err)
+	} else {
+		for _, hit := range queryResult.Hits.Hits {
+			analyzedTexts = append(analyzedTexts, AnalyzedText{
+				ID:       hit.ID,
+				Content:  hit.Source.Content,
+				Author:   hit.Source.Author,
+				SourceID: hit.Source.SourceID,
+				People:   hit.Source.People,
+				GPE:      hit.Source.GPE,
+			})
+		}
+	}
+
+	return analyzedTexts, err
 }
