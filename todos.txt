@@ -9,7 +9,7 @@ add end point for : done
 add ner processing : done
 add end point for
   * querying by
-    * date : done
+    * date
     * entities
     * sentiment
 add end point for
@@ -21,3 +21,4 @@ add end point for
 
 Put user tests in a suite
 make tests parallel
+full refactor
