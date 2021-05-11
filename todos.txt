@@ -4,12 +4,12 @@ convert user tests to a suite
 
 
 use separate es index for testing : done
-add end point for
-  * querying submitted text
+add end point for : done
+  * querying submitted text : done
 add ner processing : done
 add end point for
   * querying by
-    * date
+    * date : done
     * entities
     * sentiment
 add end point for

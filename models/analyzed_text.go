@@ -50,11 +50,11 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 }
 
 func GetAnalyzedTexts(
-	searchText string, searchAuthor string,
+	searchText string, searchAuthor string, people []string, gpe []string,
 	startDate time.Time, endDate time.Time, sourceID int,
 ) (analyzedTexts []AnalyzedText, err error) {
 
-	textQuery := elastic.NewTextQuery(searchText, searchAuthor, startDate, endDate, sourceID)
+	textQuery := elastic.NewAnalyzedTextQuery(searchText, searchAuthor, people, gpe, startDate, endDate, sourceID)
 
 	if err != nil {
 		log.Fatalln(err)

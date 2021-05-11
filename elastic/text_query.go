@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+type peoplePart struct {
+	Person string `json:"people,omitempty"`
+}
+
+type gpePart struct {
+	GPE string `json:"gpe,omitempty"`
+}
+
 type date struct {
 	GTE      string `json:"gte"`
 	LTE      string `json:"lte"`
@@ -71,6 +79,38 @@ func NewTextQuery(content string, author string, startDate time.Time, endDate ti
 					wildcardPart{WildCard: contentPart{Content: content}},
 					wildcardPart{WildCard: authorPart{Author: author}},
 				},
+			},
+		},
+	}
+
+	return textQuery
+}
+
+func NewAnalyzedTextQuery(content string, author string, people []string, gpe []string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
+	date := date{
+		GTE: util.MakeTimestamp(startDate),
+		LTE: util.MakeTimestamp(endDate),
+	}
+
+	conditions := []interface{}{
+		rangePart{Range: datePart{Date: date}},
+		matchPart{Match: sourcePart{SourceID: sourceID}},
+		wildcardPart{WildCard: contentPart{Content: content}},
+		wildcardPart{WildCard: authorPart{Author: author}},
+	}
+
+	for _, person := range people {
+		conditions = append(conditions, matchPart{Match: peoplePart{Person: person}})
+	}
+
+	for _, gpeItem := range gpe {
+		conditions = append(conditions, matchPart{Match: gpePart{GPE: gpeItem}})
+	}
+
+	textQuery := TextQuery{
+		Query: boolPart{
+			Bool: mustPart{
+				Must: conditions,
 			},
 		},
 	}
