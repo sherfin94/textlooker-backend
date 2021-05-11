@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
@@ -40,10 +39,18 @@ func GetTexts(content string, author string, dateStart time.Time, dateEnd time.T
 		log.Fatalln(err)
 		return texts, err
 	}
-	if result, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT")); err != nil {
+	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT")); err != nil {
 		log.Fatalln(err)
 	} else {
-		fmt.Println(result)
+		for _, hit := range queryResult.Hits.Hits {
+			texts = append(texts, Text{
+				ID:       hit.ID,
+				Content:  hit.Source.Content,
+				Author:   hit.Source.Author,
+				SourceID: hit.Source.SourceID,
+				Analyzed: hit.Source.Analyzed,
+			})
+		}
 	}
 	return texts, err
 }

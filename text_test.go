@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 	"textlooker-backend/models"
+	"textlooker-backend/util"
 	"time"
 
 	"github.com/stretchr/testify/assert"
@@ -59,6 +60,11 @@ func (suite *TextTestSuite) TestPostText() {
 }
 
 func (suite *TextTestSuite) TestGetText() {
-	models.NewText("Pinarayi Vijayan is the chief minister of Kerala.", "Kyle Kulinski", time.Now(), int(suite.Source.ID))
-	models.GetTexts("*", "*", time.Now().Add(-3*time.Hour), time.Now().Add(time.Hour), int(suite.Source.ID))
+	randomText := util.RandStringRunes(20)
+	randomAuthor := util.RandStringRunes(10)
+	models.NewText(randomText, randomAuthor, time.Now(), int(suite.Source.ID))
+	texts, _ := models.GetTexts(randomText, randomAuthor, time.Now().Add(-3*time.Hour), time.Now(), int(suite.Source.ID))
+
+	assert.Contains(suite.T(), texts[0].Content, randomText)
+	assert.Equal(suite.T(), texts[0].Author, randomAuthor)
 }

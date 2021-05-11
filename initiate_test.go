@@ -10,6 +10,7 @@ import (
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
 	"textlooker-backend/models"
+	"textlooker-backend/util"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -59,6 +60,7 @@ func Delete(url string, token string) (map[string]interface{}, int) {
 }
 
 func TestMain(m *testing.M) {
+	util.RandomStringGeneratorInit()
 	database.ConnectDatabase("gorm_test", database.Silent)
 	elastic.Initiate()
 	CleanupDatabase()

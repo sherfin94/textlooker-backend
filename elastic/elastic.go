@@ -51,7 +51,7 @@ func Save(index string, body interface{}, ID string) (string, error) {
 	return responseData["_id"].(string), nil
 }
 
-func Query(query TextQuery, index string) (result map[string]interface{}, err error) {
+func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 
 	queryBuffer, err := query.Buffer()
 
@@ -82,11 +82,11 @@ func Query(query TextQuery, index string) (result map[string]interface{}, err er
 				response,
 			)
 		}
-		return result, err
+		return queryResult, err
 	}
 
-	if err = json.NewDecoder(response.Body).Decode(&result); err != nil {
+	if queryResult, err = ParseResult(response.Body); err != nil {
 		log.Fatalf("Error parsing the response body: %s", err)
 	}
-	return result, err
+	return queryResult, err
 }
