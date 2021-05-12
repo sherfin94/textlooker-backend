@@ -64,7 +64,7 @@ func (suite *SourceTestSuite) TestGetSource() {
 
 	source, _ := models.NewSource("My new source", suite.User)
 
-	response, code := Get("/auth/sources", suite.Token)
+	response, code := Get("/auth/sources", nil, suite.Token)
 
 	respondedSources := response["sources"].([]interface{})
 

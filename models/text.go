@@ -34,6 +34,7 @@ func NewText(content string, author string, date time.Time, sourceID int) (text 
 
 func GetTexts(content string, author string, dateStart time.Time, dateEnd time.Time, sourceID int) (texts []Text, err error) {
 	textQuery := elastic.NewTextQuery(content, author, dateStart, dateEnd, sourceID)
+	texts = []Text{}
 
 	if err != nil {
 		log.Fatalln(err)
@@ -49,6 +50,7 @@ func GetTexts(content string, author string, dateStart time.Time, dateEnd time.T
 				Author:   hit.Source.Author,
 				SourceID: hit.Source.SourceID,
 				Analyzed: hit.Source.Analyzed,
+				Date:     hit.Source.Date,
 			})
 		}
 	}

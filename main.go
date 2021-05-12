@@ -50,6 +50,7 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	auth.DELETE("/sources/:sourceID", controllers.DeleteSource)
 
 	auth.POST("/text", controllers.PostText)
+	auth.GET("/text", controllers.GetTexts)
 
 	return router
 }
@@ -64,7 +65,7 @@ func main() {
 		models.ApplyMigrations("gorm_test", database.Loud)
 	case "run":
 		elastic.Initiate()
-		database.ConnectDatabase("gorm", database.OnlyErrors)
+		database.ConnectDatabase("gorm", database.Silent)
 		r := SetupRouter(deployment.Development)
 		r.Run(":8080")
 	}

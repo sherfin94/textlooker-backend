@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
@@ -59,7 +60,7 @@ func (suite *TextTestSuite) TestPostText() {
 	assert.Equal(suite.T(), 400, code)
 }
 
-func (suite *TextTestSuite) TestGetText() {
+func (suite *TextTestSuite) TestGetTextsFunc() {
 	randomText := util.RandStringRunes(20)
 	randomAuthor := util.RandStringRunes(10)
 	models.NewText(randomText, randomAuthor, time.Now(), int(suite.Source.ID))
@@ -67,4 +68,24 @@ func (suite *TextTestSuite) TestGetText() {
 
 	assert.Contains(suite.T(), texts[0].Content, randomText)
 	assert.Equal(suite.T(), texts[0].Author, randomAuthor)
+}
+
+func (suite *TextTestSuite) TestGetTexts() {
+	randomText := util.RandStringRunes(20)
+	randomAuthor := util.RandStringRunes(10)
+	models.NewText(randomText, randomAuthor, time.Now(), int(suite.Source.ID))
+
+	data := map[string]string{
+		"content":   randomText,
+		"author":    randomAuthor,
+		"startDate": time.Now().Add(-3 * time.Hour).Format("Jan 2 15:04:05 -0700 MST 2006"),
+		"endDate":   time.Now().Add(5 * time.Second).Format("Jan 2 15:04:05 -0700 MST 2006"),
+		"sourceID":  fmt.Sprint(suite.Source.ID),
+	}
+
+	response, code := Get("/auth/text", data, suite.Token)
+
+	assert.Equal(suite.T(), 200, code)
+	assert.Contains(suite.T(), (response["texts"].([]interface{})[0].(map[string]interface{})["content"]), randomText)
+	assert.Contains(suite.T(), (response["texts"].([]interface{})[0].(map[string]interface{})["author"]), randomAuthor)
 }

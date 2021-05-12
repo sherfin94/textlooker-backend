@@ -35,9 +35,18 @@ func Post(url string, data map[string]interface{}, token string) (map[string]int
 	return response, w.Code
 }
 
-func Get(url string, token string) (map[string]interface{}, int) {
+func Get(url string, data map[string]string, token string) (map[string]interface{}, int) {
 	w := httptest.NewRecorder()
+
 	req, _ := http.NewRequest("GET", url, nil)
+	if data != nil {
+		query := req.URL.Query()
+		for key, value := range data {
+			query.Add(key, value)
+		}
+		req.URL.RawQuery = query.Encode()
+	}
+
 	req.Header.Add("Authorization", "Bearer "+token)
 	router.ServeHTTP(w, req)
 
