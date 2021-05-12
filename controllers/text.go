@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const referenceDate = "Jan 2 15:04:05 -0700 MST 2006"
+const ReferenceDate = "Jan 2 15:04:05 -0700 MST 2006"
 
 type Text struct {
 	Content  string `json:"content" validate:"required"`
@@ -27,7 +27,7 @@ func PostText(context *gin.Context) {
 		return
 	}
 
-	time, err := time.Parse(referenceDate, text.Date)
+	time, err := time.Parse(ReferenceDate, text.Date)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -76,8 +76,8 @@ func GetTexts(context *gin.Context) {
 		return
 	}
 
-	startDate, err1 := time.Parse(referenceDate, textSearchParams.StartDate)
-	endDate, err2 := time.Parse(referenceDate, textSearchParams.EndDate)
+	startDate, err1 := time.Parse(ReferenceDate, textSearchParams.StartDate)
+	endDate, err2 := time.Parse(ReferenceDate, textSearchParams.EndDate)
 
 	if err1 != nil || err2 != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Unable to parse either or both of the dates"})

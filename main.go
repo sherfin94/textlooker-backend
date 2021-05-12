@@ -52,6 +52,8 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	auth.POST("/text", controllers.PostText)
 	auth.GET("/text", controllers.GetTexts)
 
+	auth.GET("/analyzed_text", controllers.GetAnalyzedTexts)
+
 	return router
 }
 
