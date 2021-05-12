@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/appleboy/gin-jwt/v2 v2.6.4
+	github.com/bbalet/stopwords v1.0.0 // indirect
 	github.com/cdipaolo/goml v0.0.0-20190412180403-e1f51f713598 // indirect
 	github.com/cdipaolo/sentiment v0.0.0-20200617002423-c697f64e7f10 // indirect
 	github.com/elastic/go-elasticsearch/v8 v8.0.0-20210429082631-bdab472a9cc7 // indirect
