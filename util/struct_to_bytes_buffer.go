@@ -12,6 +12,9 @@ func StructToBytesBuffer(givenStruct interface{}) (buffer bytes.Buffer, err erro
 	if err != nil {
 		return buffer, err
 	}
+
+	//fmt.Println(string(marshalledJson))
+
 	err = json.Unmarshal(marshalledJson, &stringInterfaceMap)
 	if err != nil {
 		return buffer, err
