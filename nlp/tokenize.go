@@ -1,13 +1,14 @@
 package nlp
 
 import (
+	"errors"
 	"log"
 
 	"github.com/bbalet/stopwords"
 	"github.com/jdkato/prose/v2"
 )
 
-func Tokenize(text string) (tokens []string, err error) {
+func getWords(text string) (tokens []string, err error) {
 	cleanText := stopwords.CleanString(text, "en", true)
 	doc, err := prose.NewDocument(cleanText)
 	if err != nil {
@@ -25,12 +26,7 @@ func Tokenize(text string) (tokens []string, err error) {
 	return tokens, nil
 }
 
-func Ngrams(text string, n int) (ngrams []string, err error) {
-	tokens, err := Tokenize(text)
-	if err != nil {
-		log.Fatal(err)
-		return ngrams, err
-	}
+func ngrams(tokens []string, n int) (ngrams []string, err error) {
 
 	for i := 0; i < len(tokens)-n+1; i++ {
 		ngram := tokens[i]
@@ -41,4 +37,25 @@ func Ngrams(text string, n int) (ngrams []string, err error) {
 	}
 
 	return ngrams, err
+}
+
+func Tokenize(text string) (words []string, err error) {
+	tokens, err := getWords(text)
+	if err != nil {
+		return tokens, err
+	}
+
+	unigrams, err1 := ngrams(tokens, 1)
+	bigrams, err2 := ngrams(tokens, 2)
+	trigrams, err3 := ngrams(tokens, 3)
+
+	if err1 != nil || err2 != nil || err3 != nil {
+		return tokens, errors.New("Unable to generate ngrams")
+	}
+
+	words = append(words, unigrams...)
+	words = append(words, bigrams...)
+	words = append(words, trigrams...)
+
+	return words, nil
 }

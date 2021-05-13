@@ -16,6 +16,7 @@ type AnalyzedText struct {
 	SourceID int       `json:"source_id" validate:"required"`
 	People   []string  `json:"people" validate:"required"`
 	GPE      []string  `json:"gpe" validate:"required"`
+	Tokens   []string  `json:"tokens" validate:"required"`
 }
 
 func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
@@ -31,6 +32,11 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 		}
 	}
 
+	tokens, err := nlp.Tokenize(text.Content)
+	if err != nil {
+		return analyzedText, err
+	}
+
 	analyzedText = AnalyzedText{
 		Content:  text.Content,
 		Author:   text.Author,
@@ -38,6 +44,7 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 		SourceID: text.SourceID,
 		People:   people,
 		GPE:      gpe,
+		Tokens:   tokens,
 	}
 
 	_, err = elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT"), analyzedText, text.ID)
