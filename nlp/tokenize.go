@@ -24,3 +24,21 @@ func Tokenize(text string) (tokens []string, err error) {
 
 	return tokens, nil
 }
+
+func Ngrams(text string, n int) (ngrams []string, err error) {
+	tokens, err := Tokenize(text)
+	if err != nil {
+		log.Fatal(err)
+		return ngrams, err
+	}
+
+	for i := 0; i < len(tokens)-n+1; i++ {
+		ngram := tokens[i]
+		for j := 1; j < n; j++ {
+			ngram += "." + tokens[i+j]
+		}
+		ngrams = append(ngrams, ngram)
+	}
+
+	return ngrams, err
+}
