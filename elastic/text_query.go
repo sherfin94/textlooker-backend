@@ -6,6 +6,22 @@ import (
 	"time"
 )
 
+type aggregations struct {
+	AuthorAggregation aggregation `json:"authors, omitempty"`
+	PeopleAggregation aggregation `json:"people, omitempty"`
+	GPEAggregation    aggregation `json:"gpe, omitempty"`
+	TokenAggregation  aggregation `json:"tokens, omitempty"`
+	DateAggregation   aggregation `json:"date, omitempty"`
+}
+
+type aggregation struct {
+	Terms field `json:"terms"`
+}
+
+type field struct {
+	Field string `json:"field"`
+}
+
 type peoplePart struct {
 	Person string `json:"people,omitempty"`
 }
@@ -57,7 +73,8 @@ type boolPart struct {
 }
 
 type TextQuery struct {
-	Query boolPart `json:"query"`
+	Query          boolPart     `json:"query"`
+	AggregateQuery aggregations `json:"aggs,omitempty"`
 }
 
 func (textQuery *TextQuery) Buffer() (bytesBuffer bytes.Buffer, err error) {
@@ -115,6 +132,13 @@ func NewAnalyzedTextQuery(content string, author string, people []string, gpe []
 			Bool: mustPart{
 				Must: conditions,
 			},
+		},
+		AggregateQuery: aggregations{
+			AuthorAggregation: aggregation{Terms: field{Field: "author"}},
+			PeopleAggregation: aggregation{Terms: field{Field: "people"}},
+			GPEAggregation:    aggregation{Terms: field{Field: "gpe"}},
+			TokenAggregation:  aggregation{Terms: field{Field: "tokens"}},
+			DateAggregation:   aggregation{Terms: field{Field: "date"}},
 		},
 	}
 

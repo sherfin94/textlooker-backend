@@ -47,7 +47,7 @@ func GetAnalyzedTexts(context *gin.Context) {
 		return
 	}
 
-	texts, err := models.GetAnalyzedTexts(
+	texts, aggregations, err := models.GetAnalyzedTexts(
 		analyzedTextSearchParams.Content,
 		analyzedTextSearchParams.Author,
 		analyzedTextSearchParams.People,
@@ -60,6 +60,6 @@ func GetAnalyzedTexts(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} else {
-		context.JSON(http.StatusOK, gin.H{"texts": texts})
+		context.JSON(http.StatusOK, gin.H{"texts": texts, "aggregations": aggregations})
 	}
 }

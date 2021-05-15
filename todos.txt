@@ -23,3 +23,11 @@ add end point for
 Put user tests in a suite
 make tests parallel
 full refactor
+
+
+
+
+---------------------------
+
+create aggregate query for aggregating by all fields (try multiple aggregation)
+create aggregate query for aggregating by date and one other field (composite aggregation)

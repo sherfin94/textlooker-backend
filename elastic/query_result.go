@@ -8,10 +8,11 @@ import (
 )
 
 type QueryResult struct {
-	Took     int        `json:"took"`
-	TimedOut bool       `json:"timed_out"`
-	Shards   shardsPart `json:"_shards"`
-	Hits     hitsPart   `json:"hits"`
+	Took             int              `json:"took"`
+	TimedOut         bool             `json:"timed_out"`
+	Shards           shardsPart       `json:"_shards"`
+	Hits             hitsPart         `json:"hits"`
+	AggregationsPart aggregationsPart `json:"aggregations,omitempty"`
 }
 
 type innerHitsPart struct {
@@ -37,6 +38,7 @@ type Text struct {
 	Analyzed bool      `json:"analyzed,omitempty"`
 	People   []string  `json:"people,omitempty"`
 	GPE      []string  `json:"gpe,omitempty"`
+	Tokens   []string  `json:"tokens,omitempty"`
 }
 
 type shardsPart struct {
@@ -49,6 +51,23 @@ type shardsPart struct {
 type totalPart struct {
 	Value    int    `json:"value"`
 	Relation string `json:"relation"`
+}
+
+type aggregationsPart struct {
+	AuthorAggregation aggregationResultPart `json:"authors,omitempty"`
+	PeopleAggregation aggregationResultPart `json:"people,omitempty"`
+	GPEAggregation    aggregationResultPart `json:"gpe,omitempty"`
+	TokenAggregation  aggregationResultPart `json:"tokens,omitempty"`
+	DateAggregation   aggregationResultPart `json:"date,omitempty"`
+}
+
+type aggregationResultPart struct {
+	Buckets []count `json:"buckets,omitempty"`
+}
+
+type count struct {
+	Key   interface{} `json:"key"`
+	Value int         `json:"doc_count"`
 }
 
 func ParseResult(body io.ReadCloser) (queryResult QueryResult, err error) {
