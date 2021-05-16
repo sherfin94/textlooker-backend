@@ -78,36 +78,3 @@ func ParseResult(body io.ReadCloser) (queryResult QueryResult, err error) {
 	}
 	return queryResult, err
 }
-
-// {
-// 	"took": 5,
-// 	"timed_out": false,
-// 	"_shards": {
-// 			"total": 1,
-// 			"successful": 1,
-// 			"skipped": 0,
-// 			"failed": 0
-// 	},
-// 	"hits": {
-// 			"total": {
-// 					"value": 1,
-// 					"relation": "eq"
-// 			},
-// 			"max_score": 4.0,
-// 			"hits": [
-// 					{
-// 							"_index": "test",
-// 							"_type": "_doc",
-// 							"_id": "vMQHW3kBUlFJV57c8hsa",
-// 							"_score": 4.0,
-// 							"_source": {
-// 									"content": "Pinarayi Vijayan is the chief minister of Kerala.",
-// 									"author": "Kyle Kulinski",
-// 									"date": "2021-05-11T16:15:17.97696539+05:30",
-// 									"source_id": 1288,
-// 									"analyzed": false
-// 							}
-// 					}
-// 			]
-// 	}
-// }
