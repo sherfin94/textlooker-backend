@@ -7,11 +7,11 @@ import (
 )
 
 type aggregations struct {
-	AuthorAggregation aggregation `json:"authors, omitempty"`
-	PeopleAggregation aggregation `json:"people, omitempty"`
-	GPEAggregation    aggregation `json:"gpe, omitempty"`
-	TokenAggregation  aggregation `json:"tokens, omitempty"`
-	DateAggregation   aggregation `json:"date, omitempty"`
+	AuthorAggregation aggregation `json:"authors,omitempty"`
+	PeopleAggregation aggregation `json:"people,omitempty"`
+	GPEAggregation    aggregation `json:"gpe,omitempty"`
+	TokenAggregation  aggregation `json:"tokens,omitempty"`
+	DateAggregation   aggregation `json:"date,omitempty"`
 }
 
 type aggregation struct {
