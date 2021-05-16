@@ -1,6 +1,6 @@
 package elastic
 
-type aggregations struct {
+type aggregationsQueryPart struct {
 	AuthorAggregation aggregation `json:"authors,omitempty"`
 	PeopleAggregation aggregation `json:"people,omitempty"`
 	GPEAggregation    aggregation `json:"gpe,omitempty"`
@@ -67,6 +67,6 @@ type boolPart struct {
 }
 
 type TextQuery struct {
-	Query          boolPart     `json:"query"`
-	AggregateQuery aggregations `json:"aggs,omitempty"`
+	Query          boolPart              `json:"query"`
+	AggregateQuery aggregationsQueryPart `json:"aggs,omitempty"`
 }

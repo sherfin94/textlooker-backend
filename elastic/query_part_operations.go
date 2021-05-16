@@ -2,24 +2,12 @@ package elastic
 
 import (
 	"bytes"
-	"encoding/json"
-	"io"
-	"log"
 	"textlooker-backend/util"
 	"time"
 )
 
 func (textQuery *TextQuery) Buffer() (bytesBuffer bytes.Buffer, err error) {
 	return util.StructToBytesBuffer(textQuery)
-}
-
-func ParseResult(body io.ReadCloser) (queryResult QueryResult, err error) {
-	err = json.NewDecoder(body).Decode(&queryResult)
-	if err != nil {
-		log.Fatal(err)
-		return queryResult, err
-	}
-	return queryResult, err
 }
 
 func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
@@ -38,12 +26,27 @@ func generateBasicConditions(requiredDateRange dateRange, sourceID int, content 
 	}
 }
 
-func generateAllAggregationQueryParts() aggregations {
-	return aggregations{
+func generateAllAggregationQueryParts() aggregationsQueryPart {
+	return aggregationsQueryPart{
 		AuthorAggregation: aggregation{Terms: field{Field: "author"}},
 		PeopleAggregation: aggregation{Terms: field{Field: "people"}},
 		GPEAggregation:    aggregation{Terms: field{Field: "gpe"}},
 		TokenAggregation:  aggregation{Terms: field{Field: "tokens"}},
 		DateAggregation:   aggregation{Terms: field{Field: "date"}},
 	}
+}
+
+func generateTextQuery(conditions []interface{}, aggregations *aggregationsQueryPart) TextQuery {
+	textQuery := TextQuery{
+		Query: boolPart{
+			Bool: mustPart{
+				Must: conditions,
+			},
+		},
+	}
+
+	if aggregations != nil {
+		textQuery.AggregateQuery = *aggregations
+	}
+	return textQuery
 }

@@ -20,14 +20,7 @@ func NewAnalyzedTextQuery(content string, author string, people []string, gpe []
 
 	aggregations := generateAllAggregationQueryParts()
 
-	textQuery := TextQuery{
-		Query: boolPart{
-			Bool: mustPart{
-				Must: conditions,
-			},
-		},
-		AggregateQuery: aggregations,
-	}
+	textQuery := generateTextQuery(conditions, &aggregations)
 
 	return textQuery
 }
