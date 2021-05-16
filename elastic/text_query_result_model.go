@@ -1,9 +1,6 @@
 package elastic
 
 import (
-	"encoding/json"
-	"io"
-	"log"
 	"time"
 )
 
@@ -68,13 +65,4 @@ type aggregationResultPart struct {
 type count struct {
 	Key   interface{} `json:"key"`
 	Value int         `json:"doc_count"`
-}
-
-func ParseResult(body io.ReadCloser) (queryResult QueryResult, err error) {
-	err = json.NewDecoder(body).Decode(&queryResult)
-	if err != nil {
-		log.Fatal(err)
-		return queryResult, err
-	}
-	return queryResult, err
 }
