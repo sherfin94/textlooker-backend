@@ -10,7 +10,7 @@ func NewTextQuery(content string, author string, startDate time.Time, endDate ti
 		sourceID, content, author,
 	)
 
-	textQuery := generateTextQuery(conditions, nil)
+	textQuery := generateTextQuery(conditions)
 
 	return textQuery
 }

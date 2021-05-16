@@ -13,7 +13,7 @@ type compositeAggregationQueryPart struct {
 }
 
 type aggregationsQuerySourcePart struct {
-	Aggregations []aggregation `json:"sources"`
+	Aggregations []interface{} `json:"sources"`
 }
 
 type aggregation struct {
@@ -40,6 +40,26 @@ type dateRange struct {
 
 type datePart struct {
 	Date dateRange `json:"date"`
+}
+
+type aggregationPersonPart struct {
+	Person aggregation `json:"person"`
+}
+
+type aggregationGPEPart struct {
+	GPE aggregation `json:"gpe"`
+}
+
+type aggregationTokenPart struct {
+	Token aggregation `json:"token"`
+}
+
+type aggregationAuthorPart struct {
+	Author aggregation `json:"author"`
+}
+
+type aggregationDatePart struct {
+	Date aggregation `json:"date"`
 }
 
 type sourcePart struct {

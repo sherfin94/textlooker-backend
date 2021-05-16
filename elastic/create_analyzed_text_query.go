@@ -18,9 +18,7 @@ func NewAnalyzedTextQuery(content string, author string, people []string, gpe []
 		conditions = append(conditions, matchPart{Match: gpePart{GPE: gpeItem}})
 	}
 
-	aggregations := generateAllAggregationQueryParts()
-
-	textQuery := generateTextQuery(conditions, &aggregations)
+	textQuery := generateTextQuery(conditions)
 
 	return textQuery
 }
