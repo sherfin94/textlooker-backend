@@ -1,15 +1,11 @@
 package elastic
 
 import (
-	"textlooker-backend/util"
 	"time"
 )
 
 func NewAnalyzedTextQuery(content string, author string, people []string, gpe []string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
-	date := date{
-		GTE: util.MakeTimestamp(startDate),
-		LTE: util.MakeTimestamp(endDate),
-	}
+	date := makeDate(startDate, endDate)
 
 	conditions := []interface{}{
 		rangePart{Range: datePart{Date: date}},
