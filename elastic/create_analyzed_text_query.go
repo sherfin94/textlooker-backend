@@ -5,14 +5,10 @@ import (
 )
 
 func NewAnalyzedTextQuery(content string, author string, people []string, gpe []string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
-	dateRange := makeDateRange(startDate, endDate)
-
-	conditions := []interface{}{
-		rangePart{Range: datePart{Date: dateRange}},
-		matchPart{Match: sourcePart{SourceID: sourceID}},
-		wildcardPart{WildCard: contentPart{Content: content}},
-		wildcardPart{WildCard: authorPart{Author: author}},
-	}
+	conditions := generateBasicConditions(
+		makeDateRange(startDate, endDate),
+		sourceID, content, author,
+	)
 
 	for _, person := range people {
 		conditions = append(conditions, matchPart{Match: peoplePart{Person: person}})
@@ -22,19 +18,15 @@ func NewAnalyzedTextQuery(content string, author string, people []string, gpe []
 		conditions = append(conditions, matchPart{Match: gpePart{GPE: gpeItem}})
 	}
 
+	aggregations := generateAllAggregationQueryParts()
+
 	textQuery := TextQuery{
 		Query: boolPart{
 			Bool: mustPart{
 				Must: conditions,
 			},
 		},
-		AggregateQuery: aggregations{
-			AuthorAggregation: aggregation{Terms: field{Field: "author"}},
-			PeopleAggregation: aggregation{Terms: field{Field: "people"}},
-			GPEAggregation:    aggregation{Terms: field{Field: "gpe"}},
-			TokenAggregation:  aggregation{Terms: field{Field: "tokens"}},
-			DateAggregation:   aggregation{Terms: field{Field: "date"}},
-		},
+		AggregateQuery: aggregations,
 	}
 
 	return textQuery

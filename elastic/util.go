@@ -28,3 +28,22 @@ func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
 		LTE: util.MakeTimestamp(endDate),
 	}
 }
+
+func generateBasicConditions(requiredDateRange dateRange, sourceID int, content string, author string) []interface{} {
+	return []interface{}{
+		rangePart{Range: datePart{Date: requiredDateRange}},
+		matchPart{Match: sourcePart{SourceID: sourceID}},
+		wildcardPart{WildCard: contentPart{Content: content}},
+		wildcardPart{WildCard: authorPart{Author: author}},
+	}
+}
+
+func generateAllAggregationQueryParts() aggregations {
+	return aggregations{
+		AuthorAggregation: aggregation{Terms: field{Field: "author"}},
+		PeopleAggregation: aggregation{Terms: field{Field: "people"}},
+		GPEAggregation:    aggregation{Terms: field{Field: "gpe"}},
+		TokenAggregation:  aggregation{Terms: field{Field: "tokens"}},
+		DateAggregation:   aggregation{Terms: field{Field: "date"}},
+	}
+}
