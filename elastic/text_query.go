@@ -100,9 +100,6 @@ func NewTextQuery(content string, author string, startDate time.Time, endDate ti
 		},
 	}
 
-	// jsonBytes, _ := json.Marshal(textQuery)
-	// fmt.Printf("%v\n", string(jsonBytes))
-
 	return textQuery
 }
 
