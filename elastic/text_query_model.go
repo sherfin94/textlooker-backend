@@ -24,14 +24,14 @@ type gpePart struct {
 	GPE string `json:"gpe,omitempty"`
 }
 
-type date struct {
+type dateRange struct {
 	GTE      string `json:"gte"`
 	LTE      string `json:"lte"`
 	TimeZone string `json:"time_zone,omitempty"`
 }
 
 type datePart struct {
-	Date date `json:"date"`
+	Date dateRange `json:"date"`
 }
 
 type sourcePart struct {

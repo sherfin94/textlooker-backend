@@ -22,8 +22,8 @@ func ParseResult(body io.ReadCloser) (queryResult QueryResult, err error) {
 	return queryResult, err
 }
 
-func makeDate(startDate time.Time, endDate time.Time) (resultDate date) {
-	return date{
+func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
+	return dateRange{
 		GTE: util.MakeTimestamp(startDate),
 		LTE: util.MakeTimestamp(endDate),
 	}
