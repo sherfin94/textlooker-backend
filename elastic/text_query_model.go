@@ -8,6 +8,14 @@ type aggregationsQueryPart struct {
 	DateAggregation   aggregation `json:"date,omitempty"`
 }
 
+type compositeAggregationQueryPart struct {
+	Sources aggregationsQuerySourcePart `json:"composite"`
+}
+
+type aggregationsQuerySourcePart struct {
+	Aggregations []aggregation `json:"sources"`
+}
+
 type aggregation struct {
 	Terms field `json:"terms"`
 }
@@ -67,6 +75,6 @@ type boolPart struct {
 }
 
 type TextQuery struct {
-	Query          boolPart              `json:"query"`
-	AggregateQuery aggregationsQueryPart `json:"aggs,omitempty"`
+	Query          boolPart    `json:"query"`
+	AggregateQuery interface{} `json:"aggs,omitempty"`
 }
