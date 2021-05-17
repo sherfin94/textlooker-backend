@@ -1,13 +1,15 @@
 package models
 
 import (
+	"log"
+	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
 	"textlooker-backend/util"
 	"time"
 )
 
 type CountItem struct {
-	Date  time.Time   `json:"date,omitempty" validate:"required"`
+	Date  *time.Time  `json:"date,omitempty" validate:"required"`
 	Value interface{} `json:"value" validate:"required"`
 	Count int         `json:"count" validate:"required"`
 }
@@ -78,4 +80,23 @@ func CreatePerDateAggregationFromQueryResult(queryResult elastic.QueryResult) (a
 		Tokens:  tokens,
 		Dates:   dates,
 	}
+}
+
+func GetAggregation(
+	searchText string, searchAuthor string, people []string, gpe []string,
+	startDate time.Time, endDate time.Time, sourceID int,
+) (aggregation Aggregation, err error) {
+
+	query := elastic.NewAggregateAllQuery(
+		searchText, searchAuthor, people, gpe, startDate,
+		endDate, sourceID,
+	)
+
+	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
+		log.Fatalln(err)
+	} else {
+		aggregation = CreateGeneralAggregationFromQueryResult(queryResult)
+	}
+
+	return aggregation, err
 }

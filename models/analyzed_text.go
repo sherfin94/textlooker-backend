@@ -63,10 +63,6 @@ func GetAnalyzedTexts(
 
 	textQuery := elastic.NewAnalyzedTextQuery(searchText, searchAuthor, people, gpe, startDate, endDate, sourceID)
 
-	if err != nil {
-		log.Fatalln(err)
-		return analyzedTexts, err
-	}
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Fatalln(err)
 	} else {

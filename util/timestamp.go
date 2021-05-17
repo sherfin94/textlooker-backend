@@ -11,10 +11,12 @@ func MakeTimestamp(givenTime time.Time) string {
 	return fmt.Sprintf("%d", timestamp)
 }
 
-func ParseTimestamp(timestamp string) time.Time {
+func ParseTimestamp(timestamp string) *time.Time {
 	timeAsInteger, err := strconv.ParseInt(timestamp, 10, 64)
 	if err != nil {
 		panic(err)
 	}
-	return time.Unix(timeAsInteger, 0)
+
+	result := time.Unix(timeAsInteger, 0)
+	return &result
 }
