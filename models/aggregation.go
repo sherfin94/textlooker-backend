@@ -42,7 +42,7 @@ func CreateGeneralAggregationFromQueryResult(queryResult elastic.QueryResult) (a
 	}
 
 	for _, bucket := range queryResult.AggregationsPart.DateAggregation.Buckets {
-		dates = append(dates, CountItem{Value: bucket.Key, Count: bucket.Value})
+		dates = append(dates, CountItem{Value: util.ParseTimestamp(bucket.Key.(float64)), Count: bucket.Value})
 	}
 
 	return Aggregation{

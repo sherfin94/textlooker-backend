@@ -2,20 +2,16 @@ package util
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 )
 
 func MakeTimestamp(givenTime time.Time) string {
-	timestamp := givenTime.UnixNano() / int64(time.Millisecond)
-	return fmt.Sprintf("%d", timestamp)
+	timestamp := float64(givenTime.UnixNano()) / float64(time.Millisecond)
+	return fmt.Sprintf("%f", timestamp)
 }
 
-func ParseTimestamp(timestamp string) *time.Time {
-	timeAsInteger, err := strconv.ParseInt(timestamp, 10, 64)
-	if err != nil {
-		panic(err)
-	}
+func ParseTimestamp(timestamp float64) *time.Time {
+	timeAsInteger := int64(timestamp) / 1000
 
 	result := time.Unix(timeAsInteger, 0)
 	return &result
