@@ -46,7 +46,7 @@ func (suite *AnalyzedTextTestSuite) TestGetAnalyzedTextFunc() {
 	randomAuthor := util.RandStringRunes(10)
 	text, _ := models.NewText("Abraham Lincoln is the first president of United Stated Of America.", randomAuthor, time.Now(), int(suite.Source.ID))
 	models.NewAnalyzedText(text)
-	analyzedTexts,_, _ := models.GetAnalyzedTexts("Abraham", randomAuthor, []string{"Abraham Lincoln"}, []string{"America"}, time.Now().Add(-3*time.Hour), time.Now().Add(time.Minute), int(suite.Source.ID))
+	analyzedTexts, _ := models.GetAnalyzedTexts("Abraham", randomAuthor, []string{"Abraham Lincoln"}, []string{"America"}, time.Now().Add(-3*time.Hour), time.Now().Add(time.Minute), int(suite.Source.ID))
 
 	assert.Contains(suite.T(), analyzedTexts[0].Content, "first president")
 	assert.Contains(suite.T(), analyzedTexts[0].People, "Abraham Lincoln")

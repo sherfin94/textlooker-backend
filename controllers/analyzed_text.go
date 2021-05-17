@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"textlooker-backend/database"
 	"textlooker-backend/models"
 	"time"
 
@@ -22,32 +21,16 @@ type AnalyzedTextSearchParams struct {
 func GetAnalyzedTexts(context *gin.Context) {
 	var analyzedTextSearchParams AnalyzedTextSearchParams
 	var source models.Source
+	var startDate, endDate time.Time
 
-	if err := context.BindQuery(&analyzedTextSearchParams); err != nil {
+	err := bindParamsToSourceAndDateRange(context, &analyzedTextSearchParams, &source, &startDate, &endDate)
+
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, _ := context.Get("user")
-	sourceSearchResult := database.Database.Where(
-		"user_id = ? and id = ?",
-		user.(*models.User).ID,
-		analyzedTextSearchParams.SourceID).Find(&source)
-
-	if sourceSearchResult.Error != nil || source.ID == 0 {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Source could not be verified`"})
-		return
-	}
-
-	startDate, err1 := time.Parse(ReferenceDate, analyzedTextSearchParams.StartDate)
-	endDate, err2 := time.Parse(ReferenceDate, analyzedTextSearchParams.EndDate)
-
-	if err1 != nil || err2 != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Unable to parse either or both of the dates"})
-		return
-	}
-
-	texts, aggregations, err := models.GetAnalyzedTexts(
+	texts, err := models.GetAnalyzedTexts(
 		analyzedTextSearchParams.Content,
 		analyzedTextSearchParams.Author,
 		analyzedTextSearchParams.People,
@@ -60,6 +43,6 @@ func GetAnalyzedTexts(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} else {
-		context.JSON(http.StatusOK, gin.H{"texts": texts, "aggregations": aggregations})
+		context.JSON(http.StatusOK, gin.H{"texts": texts})
 	}
 }

@@ -59,13 +59,13 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 func GetAnalyzedTexts(
 	searchText string, searchAuthor string, people []string, gpe []string,
 	startDate time.Time, endDate time.Time, sourceID int,
-) (analyzedTexts []AnalyzedText, aggregation Aggregation, err error) {
+) (analyzedTexts []AnalyzedText, err error) {
 
 	textQuery := elastic.NewAnalyzedTextQuery(searchText, searchAuthor, people, gpe, startDate, endDate, sourceID)
 
 	if err != nil {
 		log.Fatalln(err)
-		return analyzedTexts, aggregation, err
+		return analyzedTexts, err
 	}
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Fatalln(err)
@@ -81,9 +81,7 @@ func GetAnalyzedTexts(
 				Tokens:   hit.Source.Tokens,
 			})
 		}
-
-		aggregation = CreateAggregationFromQueryResult(queryResult)
 	}
 
-	return analyzedTexts, aggregation, err
+	return analyzedTexts, err
 }
