@@ -65,4 +65,5 @@ type aggregationResultPart struct {
 type count struct {
 	Key   interface{} `json:"key"`
 	Value int         `json:"doc_count"`
+	Date  string      `json:"date,omitempty"`
 }
