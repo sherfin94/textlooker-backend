@@ -54,32 +54,13 @@ func CreateGeneralAggregationFromQueryResult(queryResult elastic.QueryResult) (a
 	}
 }
 
-func CreatePerDateAggregationFromQueryResult(queryResult elastic.QueryResult) (aggregation Aggregation) {
-	var authors, people, gpe, tokens, dates []CountItem
-
-	for _, bucket := range queryResult.AggregationsPart.AuthorAggregation.Buckets {
-		authors = append(authors, CountItem{Value: bucket.Key, Count: bucket.Value, Date: util.ParseTimestamp(bucket.Date)})
+func CreatePerDateAggregationFromQueryResult(queryResult elastic.QueryResult) (counts []CountItem) {
+	counts = []CountItem{}
+	for _, bucket := range queryResult.AggregationsPart.PerDateAggregation.Buckets {
+		counts = append(counts, CountItem{Value: bucket.Key.FieldValue, Count: bucket.Count, Date: util.ParseTimestamp(bucket.Key.Date)})
 	}
 
-	for _, bucket := range queryResult.AggregationsPart.PeopleAggregation.Buckets {
-		people = append(people, CountItem{Value: bucket.Key, Count: bucket.Value, Date: util.ParseTimestamp(bucket.Date)})
-	}
-
-	for _, bucket := range queryResult.AggregationsPart.GPEAggregation.Buckets {
-		gpe = append(gpe, CountItem{Value: bucket.Key, Count: bucket.Value, Date: util.ParseTimestamp(bucket.Date)})
-	}
-
-	for _, bucket := range queryResult.AggregationsPart.TokenAggregation.Buckets {
-		tokens = append(tokens, CountItem{Value: bucket.Key, Count: bucket.Value, Date: util.ParseTimestamp(bucket.Date)})
-	}
-
-	return Aggregation{
-		Authors: authors,
-		People:  people,
-		GPE:     gpe,
-		Tokens:  tokens,
-		Dates:   dates,
-	}
+	return counts
 }
 
 func GetAggregation(
@@ -99,4 +80,22 @@ func GetAggregation(
 	}
 
 	return aggregation, err
+}
+
+func GetPerDateAggregation(
+	searchText string, searchAuthor string, people []string, gpe []string,
+	startDate time.Time, endDate time.Time, sourceID int, field elastic.AggregationField,
+) (counts []CountItem, err error) {
+
+	query := elastic.NewAggregateByOneFieldQuery(
+		searchText, searchAuthor, people, gpe, startDate,
+		endDate, sourceID, field,
+	)
+	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
+		log.Fatalln(err)
+	} else {
+		counts = CreatePerDateAggregationFromQueryResult(queryResult)
+	}
+
+	return counts, err
 }

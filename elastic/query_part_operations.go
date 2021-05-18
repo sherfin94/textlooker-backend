@@ -57,23 +57,26 @@ func AddSingleFieldCompositeAggregationPart(query TextQuery, fieldToAggregate Ag
 
 	switch fieldToAggregate {
 	case People:
-		aggregationPart = aggregationPersonPart{Person: aggregation{Terms: field{Field: "people"}}}
+		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "people"}}}
 	case Tokens:
-		aggregationPart = aggregationTokenPart{Token: aggregation{Terms: field{Field: "tokens"}}}
+		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "tokens"}}}
 	case GPE:
-		aggregationPart = aggregationGPEPart{GPE: aggregation{Terms: field{Field: "gpe"}}}
+		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "gpe"}}}
 	case Authors:
-		aggregationPart = aggregationAuthorPart{Author: aggregation{Terms: field{Field: "author"}}}
+		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "author"}}}
 	}
 
-	query.AggregateQuery = compositeAggregationQueryPart{
-		Sources: aggregationsQuerySourcePart{
-			Aggregations: []interface{}{
-				aggregationDatePart{Date: aggregation{Terms: field{Field: "date"}}},
-				aggregationPart,
+	query.AggregateQuery =
+		customBucketNamePartForCompositeQuery{
+			compositeAggregationQueryPart{
+				Sources: aggregationsQuerySourcePart{
+					Aggregations: []interface{}{
+						aggregationDatePart{Date: aggregation{Terms: field{Field: "date"}}},
+						aggregationPart,
+					},
+				},
 			},
-		},
-	}
+		}
 
 	return query
 }

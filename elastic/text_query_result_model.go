@@ -51,12 +51,14 @@ type totalPart struct {
 }
 
 type aggregationsPart struct {
-	AuthorAggregation aggregationResultPart `json:"authors,omitempty"`
-	PeopleAggregation aggregationResultPart `json:"people,omitempty"`
-	GPEAggregation    aggregationResultPart `json:"gpe,omitempty"`
-	TokenAggregation  aggregationResultPart `json:"tokens,omitempty"`
-	DateAggregation   aggregationResultPart `json:"date,omitempty"`
+	AuthorAggregation  aggregationResultPart `json:"authors,omitempty"`
+	PeopleAggregation  aggregationResultPart `json:"people,omitempty"`
+	GPEAggregation     aggregationResultPart `json:"gpe,omitempty"`
+	TokenAggregation   aggregationResultPart `json:"tokens,omitempty"`
+	DateAggregation    aggregationResultPart `json:"date,omitempty"`
+	PerDateAggregation perDateAggregationResultPart `json:"per_date,omitempty"`
 }
+
 
 type aggregationResultPart struct {
 	Buckets []count `json:"buckets,omitempty"`
@@ -66,4 +68,18 @@ type count struct {
 	Key   interface{} `json:"key"`
 	Value int         `json:"doc_count"`
 	Date  float64     `json:"date,omitempty"`
+}
+
+type perDateAggregationResultPart struct {
+	Buckets []perDateBucket `json:"buckets,omitempty"`
+}
+
+type perDateBucket struct {
+	Key   perDateCount `json:"key"`
+	Count int         `json:"doc_count"`
+}
+
+type perDateCount struct {
+	Date  float64     `json:"date,omitempty"`
+	FieldValue interface{} `json:"field_value"`
 }

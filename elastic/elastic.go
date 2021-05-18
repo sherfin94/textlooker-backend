@@ -58,7 +58,6 @@ func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 	if err != nil {
 		log.Fatalf("Error encoding query: %s", err)
 	}
-
 	var response *esapi.Response
 	response, err = Client.Search(
 		Client.Search.WithContext(context.Background()),

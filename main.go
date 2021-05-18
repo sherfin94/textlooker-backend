@@ -55,6 +55,7 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	auth.GET("/analyzed_text", controllers.GetAnalyzedTexts)
 
 	auth.GET("/general_aggregation", controllers.GetGeneralAggregation)
+	auth.GET("/per_date_aggregation", controllers.GetPerDateAggregation)
 
 	return router
 }

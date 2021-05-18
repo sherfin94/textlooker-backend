@@ -12,6 +12,10 @@ type compositeAggregationQueryPart struct {
 	Sources aggregationsQuerySourcePart `json:"composite"`
 }
 
+type customBucketNamePartForCompositeQuery struct {
+	Composite compositeAggregationQueryPart `json:"per_date"`
+}
+
 type aggregationsQuerySourcePart struct {
 	Aggregations []interface{} `json:"sources"`
 }
@@ -40,6 +44,10 @@ type dateRange struct {
 
 type datePart struct {
 	Date dateRange `json:"date"`
+}
+
+type aggregationGenericFieldPart struct {
+	Field aggregation `json:"field_value"`
 }
 
 type aggregationPersonPart struct {
