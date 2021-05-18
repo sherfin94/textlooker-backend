@@ -91,6 +91,7 @@ func GetPerDateAggregation(
 		searchText, searchAuthor, people, gpe, startDate,
 		endDate, sourceID, field,
 	)
+
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Fatalln(err)
 	} else {

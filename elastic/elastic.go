@@ -76,10 +76,7 @@ func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 		if err = json.NewDecoder(response.Body).Decode(&e); err != nil {
 			log.Fatalf("Error parsing the response body: %s", err)
 		} else {
-
-			log.Fatalf("[%v]",
-				response,
-			)
+			return queryResult, errors.New("elasticsearch query failed")
 		}
 		return queryResult, err
 	}

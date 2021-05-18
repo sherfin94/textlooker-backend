@@ -1,5 +1,7 @@
 package elastic
 
+import "encoding/json"
+
 type aggregationsQueryPart struct {
 	AuthorAggregation aggregation `json:"authors,omitempty"`
 	PeopleAggregation aggregation `json:"people,omitempty"`
@@ -18,14 +20,20 @@ type customBucketNamePartForCompositeQuery struct {
 
 type aggregationsQuerySourcePart struct {
 	Aggregations []interface{} `json:"sources"`
+	Size         int           `json:"size,omitempty"`
 }
 
 type aggregation struct {
 	Terms field `json:"terms"`
 }
 
+type dateHistogramAggregation struct {
+	Terms field `json:"date_histogram"`
+}
+
 type field struct {
-	Field string `json:"field"`
+	Field    string `json:"field"`
+	Interval string `json:"interval,omitempty"`
 }
 
 type peoplePart struct {
@@ -67,7 +75,7 @@ type aggregationAuthorPart struct {
 }
 
 type aggregationDatePart struct {
-	Date aggregation `json:"date"`
+	Date dateHistogramAggregation `json:"date"`
 }
 
 type sourcePart struct {
@@ -104,5 +112,11 @@ type boolPart struct {
 
 type TextQuery struct {
 	Query          boolPart    `json:"query"`
+	Size           int         `json:"size,omitempty"`
 	AggregateQuery interface{} `json:"aggs,omitempty"`
+}
+
+func (query *TextQuery) RequestString() (requestString string) {
+	jsonBytes, _ := json.Marshal(query)
+	return string(jsonBytes)
 }

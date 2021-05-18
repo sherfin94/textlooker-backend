@@ -70,8 +70,9 @@ func AddSingleFieldCompositeAggregationPart(query TextQuery, fieldToAggregate Ag
 		customBucketNamePartForCompositeQuery{
 			compositeAggregationQueryPart{
 				Sources: aggregationsQuerySourcePart{
+					Size: 100,
 					Aggregations: []interface{}{
-						aggregationDatePart{Date: aggregation{Terms: field{Field: "date"}}},
+						aggregationDatePart{Date: dateHistogramAggregation{Terms: field{Field: "date", Interval: "1d"}}},
 						aggregationPart,
 					},
 				},
