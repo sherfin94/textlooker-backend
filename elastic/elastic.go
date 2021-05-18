@@ -32,7 +32,8 @@ func Save(index string, body interface{}, ID string) (string, error) {
 
 	response, err := request.Do(context.Background(), Client)
 	if err != nil {
-		log.Fatalf("Error getting response: %s", err)
+		log.Printf("Error getting response: %s", err)
+		return string("error"), err
 	}
 
 	defer response.Body.Close()
@@ -56,7 +57,8 @@ func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 	queryBuffer, err := query.Buffer()
 
 	if err != nil {
-		log.Fatalf("Error encoding query: %s", err)
+		log.Printf("Error encoding query: %s", err)
+		return queryResult, err
 	}
 	var response *esapi.Response
 	response, err = Client.Search(
@@ -66,7 +68,8 @@ func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 	)
 
 	if err != nil {
-		log.Fatalf("Error getting response: %s", err)
+		log.Printf("Error getting response: %s", err)
+		return queryResult, err
 	}
 
 	defer response.Body.Close()
@@ -74,7 +77,7 @@ func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 	if response.IsError() {
 		var e map[string]interface{}
 		if err = json.NewDecoder(response.Body).Decode(&e); err != nil {
-			log.Fatalf("Error parsing the response body: %s", err)
+			log.Printf("Error parsing the response body: %s", err)
 		} else {
 			return queryResult, errors.New("elasticsearch query failed")
 		}
@@ -82,7 +85,7 @@ func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 	}
 
 	if queryResult, err = ParseResult(response.Body); err != nil {
-		log.Fatalf("Error parsing the response body: %s", err)
+		log.Printf("Error parsing the response body: %s", err)
 	}
 	return queryResult, err
 }

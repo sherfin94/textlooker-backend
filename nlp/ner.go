@@ -13,7 +13,8 @@ type Entity struct {
 
 func ExtractEntities(text string) (entities []Entity) {
 	if doc, err := prose.NewDocument(text); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return entities
 	} else {
 		for _, ent := range doc.Entities() {
 			entities = append(entities, Entity{Type: ent.Label, Text: ent.Text})

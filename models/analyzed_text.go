@@ -64,7 +64,8 @@ func GetAnalyzedTexts(
 	textQuery := elastic.NewAnalyzedTextQuery(searchText, searchAuthor, people, gpe, startDate, endDate, sourceID)
 
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return analyzedTexts, err
 	} else {
 		for _, hit := range queryResult.Hits.Hits {
 			analyzedTexts = append(analyzedTexts, AnalyzedText{

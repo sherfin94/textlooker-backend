@@ -74,7 +74,8 @@ func GetAggregation(
 	)
 
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return aggregation, err
 	} else {
 		aggregation = CreateGeneralAggregationFromQueryResult(queryResult)
 	}
@@ -93,7 +94,8 @@ func GetPerDateAggregation(
 	)
 
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return counts, err
 	} else {
 		counts = CreatePerDateAggregationFromQueryResult(queryResult)
 	}

@@ -12,7 +12,7 @@ func getWords(text string) (tokens []string, err error) {
 	cleanText := stopwords.CleanString(text, "en", true)
 	doc, err := prose.NewDocument(cleanText)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return tokens, err
 	}
 	tokens = []string{}

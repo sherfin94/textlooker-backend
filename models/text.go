@@ -12,7 +12,7 @@ import (
 type Text struct {
 	ID       string    `json:"-"`
 	Content  string    `json:"content" validate:"required"`
-	Author   []string    `json:"author" validate:"required"`
+	Author   []string  `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
 	SourceID int       `json:"source_id" validate:"required"`
 	Analyzed bool      `json:"analyzed"`
@@ -37,11 +37,12 @@ func GetTexts(content string, author string, dateStart time.Time, dateEnd time.T
 	texts = []Text{}
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return texts, err
 	}
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT")); err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return texts, err
 	} else {
 		for _, hit := range queryResult.Hits.Hits {
 			texts = append(texts, Text{
