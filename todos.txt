@@ -10,24 +10,22 @@ add end point for : done
 add ner processing : done
 add end point for
   * querying by
-    * date
-    * entities
-    * sentiment
+    * date : done 
+    * entities : done
 add end point for
   * aggregating over date by
-    * people
-    * organizations
-    * sentiment
+    * people : done
+    * organizations : done
 
 
 Put user tests in a suite
 make tests parallel
-full refactor
+full refactor : done
 
 
 
 
 ---------------------------
 
-create aggregate query for aggregating by all fields (try multiple aggregation)
-create aggregate query for aggregating by date and one other field (composite aggregation)
+create aggregate query for aggregating by all fields (try multiple aggregation) : done
+create aggregate query for aggregating by date and one other field (composite aggregation) : done
