@@ -56,7 +56,7 @@ func (suite *TextTestSuite) TestGeneralAggregations() {
 	}
 
 	for _, text := range texts {
-		savedText, _ := models.NewText(text[0], text[1], time.Now(), int(suite.Source.ID))
+		savedText, _ := models.NewText(text[0], []string{text[1]}, time.Now(), int(suite.Source.ID))
 		models.NewAnalyzedText(savedText)
 	}
 
@@ -101,7 +101,7 @@ func (suite *TextTestSuite) TestPerDateAggregation() {
 	}
 
 	for _, text := range texts {
-		savedText, _ := models.NewText(text[0], text[1], time.Now(), int(suite.Source.ID))
+		savedText, _ := models.NewText(text[0], []string{text[1]}, time.Now(), int(suite.Source.ID))
 		models.NewAnalyzedText(savedText)
 	}
 

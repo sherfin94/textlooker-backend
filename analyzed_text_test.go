@@ -44,19 +44,19 @@ func TestAnalyzedTextTestSuite(t *testing.T) {
 
 func (suite *AnalyzedTextTestSuite) TestGetAnalyzedTextFunc() {
 	randomAuthor := util.RandStringRunes(10)
-	text, _ := models.NewText("Abraham Lincoln is the first president of United Stated Of America.", randomAuthor, time.Now(), int(suite.Source.ID))
+	text, _ := models.NewText("Abraham Lincoln is the first president of United Stated Of America.", []string{randomAuthor}, time.Now(), int(suite.Source.ID))
 	models.NewAnalyzedText(text)
 	analyzedTexts, _ := models.GetAnalyzedTexts("Abraham", randomAuthor, []string{"Abraham Lincoln"}, []string{"America"}, time.Now().Add(-3*time.Hour), time.Now().Add(time.Minute), int(suite.Source.ID))
 
 	assert.Contains(suite.T(), analyzedTexts[0].Content, "first president")
 	assert.Contains(suite.T(), analyzedTexts[0].People, "Abraham Lincoln")
-	assert.Equal(suite.T(), analyzedTexts[0].Author, randomAuthor)
+	assert.Equal(suite.T(), analyzedTexts[0].Author, []string{randomAuthor})
 }
 
 func (suite *TextTestSuite) TestGetAnalyzedTexts() {
 	randomText := "Abraham Lincoln is a good president of the United States Of America."
 	randomAuthor := util.RandStringRunes(10)
-	text, _ := models.NewText(randomText, randomAuthor, time.Now(), int(suite.Source.ID))
+	text, _ := models.NewText(randomText, []string{randomAuthor}, time.Now(), int(suite.Source.ID))
 	models.NewAnalyzedText(text)
 
 	data := map[string]string{

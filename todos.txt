@@ -1,31 +1,5 @@
-elastic retry backoff
-bulk save of text
-convert user tests to a suite
-optimize tokenization
-
-
-use separate es index for testing : done
-add end point for : done
-  * querying submitted text : done
-add ner processing : done
-add end point for
-  * querying by
-    * date : done 
-    * entities : done
-add end point for
-  * aggregating over date by
-    * people : done
-    * organizations : done
-
-
 Put user tests in a suite
 make tests parallel
-full refactor : done
 
-
-
-
----------------------------
-
-create aggregate query for aggregating by all fields (try multiple aggregation) : done
-create aggregate query for aggregating by date and one other field (composite aggregation) : done
+don't allow creation of text without existing source
+Remove all log.fatalf 

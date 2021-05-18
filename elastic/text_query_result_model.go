@@ -29,7 +29,7 @@ type hitsPart struct {
 type Text struct {
 	ID       string    `json:"-"`
 	Content  string    `json:"content" validate:"required"`
-	Author   string    `json:"author" validate:"required"`
+	Author   []string  `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
 	SourceID int       `json:"source_id" validate:"required"`
 	Analyzed bool      `json:"analyzed,omitempty"`
@@ -47,18 +47,17 @@ type shardsPart struct {
 
 type totalPart struct {
 	Value    int    `json:"value"`
-	Relation string `json:"relation"`
+	Relation string `json:"todrelation"`
 }
 
 type aggregationsPart struct {
-	AuthorAggregation  aggregationResultPart `json:"authors,omitempty"`
-	PeopleAggregation  aggregationResultPart `json:"people,omitempty"`
-	GPEAggregation     aggregationResultPart `json:"gpe,omitempty"`
-	TokenAggregation   aggregationResultPart `json:"tokens,omitempty"`
-	DateAggregation    aggregationResultPart `json:"date,omitempty"`
+	AuthorAggregation  aggregationResultPart        `json:"authors,omitempty"`
+	PeopleAggregation  aggregationResultPart        `json:"people,omitempty"`
+	GPEAggregation     aggregationResultPart        `json:"gpe,omitempty"`
+	TokenAggregation   aggregationResultPart        `json:"tokens,omitempty"`
+	DateAggregation    aggregationResultPart        `json:"date,omitempty"`
 	PerDateAggregation perDateAggregationResultPart `json:"per_date,omitempty"`
 }
-
 
 type aggregationResultPart struct {
 	Buckets []count `json:"buckets,omitempty"`
@@ -76,10 +75,10 @@ type perDateAggregationResultPart struct {
 
 type perDateBucket struct {
 	Key   perDateCount `json:"key"`
-	Count int         `json:"doc_count"`
+	Count int          `json:"doc_count"`
 }
 
 type perDateCount struct {
-	Date  float64     `json:"date,omitempty"`
+	Date       float64     `json:"date,omitempty"`
 	FieldValue interface{} `json:"field_value"`
 }

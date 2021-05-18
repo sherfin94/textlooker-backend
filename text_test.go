@@ -45,7 +45,7 @@ func TestTextTestSuite(t *testing.T) {
 func (suite *TextTestSuite) TestPostText() {
 	data := map[string]interface{}{
 		"content":  "Abraham Lincoln is an amazing President. The United States of America is a good country.",
-		"author":   "Some person",
+		"author":   []string{"Some person", "some other person"},
 		"date":     time.Now().Format("Jan 2 15:04:05 -0700 MST 2006"),
 		"sourceID": suite.Source.ID,
 	}
@@ -63,17 +63,17 @@ func (suite *TextTestSuite) TestPostText() {
 func (suite *TextTestSuite) TestGetTextsFunc() {
 	randomText := util.RandStringRunes(20)
 	randomAuthor := util.RandStringRunes(10)
-	models.NewText(randomText, randomAuthor, time.Now(), int(suite.Source.ID))
+	models.NewText(randomText, []string{randomAuthor}, time.Now(), int(suite.Source.ID))
 	texts, _ := models.GetTexts(randomText, randomAuthor, time.Now().Add(-3*time.Hour), time.Now(), int(suite.Source.ID))
 
 	assert.Contains(suite.T(), texts[0].Content, randomText)
-	assert.Equal(suite.T(), texts[0].Author, randomAuthor)
+	assert.Equal(suite.T(), texts[0].Author, []string{randomAuthor})
 }
 
 func (suite *TextTestSuite) TestGetTexts() {
 	randomText := util.RandStringRunes(20)
 	randomAuthor := util.RandStringRunes(10)
-	models.NewText(randomText, randomAuthor, time.Now(), int(suite.Source.ID))
+	models.NewText(randomText, []string{randomAuthor}, time.Now(), int(suite.Source.ID))
 
 	data := map[string]string{
 		"content":   randomText,

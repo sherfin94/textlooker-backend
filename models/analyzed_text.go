@@ -11,7 +11,7 @@ import (
 type AnalyzedText struct {
 	ID       string    `json:"-"`
 	Content  string    `json:"content" validate:"required"`
-	Author   string    `json:"author" validate:"required"`
+	Author   []string  `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
 	SourceID int       `json:"source_id" validate:"required"`
 	People   []string  `json:"people" validate:"required"`

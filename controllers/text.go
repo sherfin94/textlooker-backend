@@ -13,7 +13,7 @@ const ReferenceDate = "Jan 2 15:04:05 -0700 MST 2006"
 
 type Text struct {
 	Content  string `json:"content" validate:"required"`
-	Author   string `json:"author" validate:"required"`
+	Author   []string `json:"author" validate:"required"`
 	Date     string `json:"date" validate:"required"`
 	SourceID int    `json:"sourceID" validate:"required"`
 }
