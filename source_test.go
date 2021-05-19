@@ -21,8 +21,8 @@ type SourceTestSuite struct {
 func (suite *SourceTestSuite) SetupSuite() {
 
 	email, password := "test@test.com", "Abcd124!"
-	suite.UserRegistration, _ = models.NewUserRegistration(email)
-	suite.User, _ = models.NewUser(email, password, *suite.UserRegistration)
+	suite.UserRegistration, _ = models.NewUserRegistration(email, password)
+	suite.User, _ = models.NewUser(email, *suite.UserRegistration)
 
 	data := map[string]interface{}{
 		"password": password,

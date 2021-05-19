@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 	"textlooker-backend/models"
@@ -21,8 +22,8 @@ type AnalyzedTextTestSuite struct {
 
 func (suite *AnalyzedTextTestSuite) SetupSuite() {
 	email, password := "test4@test.com", "Abcd124!"
-	suite.UserRegistration, _ = models.NewUserRegistration(email)
-	suite.User, _ = models.NewUser(email, password, *suite.UserRegistration)
+	suite.UserRegistration, _ = models.NewUserRegistration(email, password)
+	suite.User, _ = models.NewUser(email, *suite.UserRegistration)
 	suite.Source, _ = models.NewSource("My Source", suite.User)
 
 	data := map[string]interface{}{
@@ -68,7 +69,22 @@ func (suite *TextTestSuite) TestGetAnalyzedTexts() {
 
 	response, code := Get("/auth/analyzed_text", data, suite.Token)
 
+	type textPart struct {
+		Content string   `json:"content"`
+		Author  []string `json:"author"`
+	}
+	type resultPart struct {
+		Texts []textPart `json:"texts"`
+	}
+
+	var result resultPart
+
+	jsonBytes, _ := json.Marshal(response)
+	json.Unmarshal(jsonBytes, &result)
+
+	lastText := result.Texts[len(result.Texts)-1]
+
 	assert.Equal(suite.T(), 200, code)
-	assert.Contains(suite.T(), (response["texts"].([]interface{})[0].(map[string]interface{})["content"]), "good president")
-	assert.Contains(suite.T(), (response["texts"].([]interface{})[0].(map[string]interface{})["author"]), randomAuthor)
+	assert.Contains(suite.T(), lastText.Content, "good president")
+	assert.Contains(suite.T(), lastText.Author, randomAuthor)
 }

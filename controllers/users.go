@@ -10,7 +10,6 @@ import (
 
 type User struct {
 	Email             string `json:"email" binding:"required"`
-	Password          string `json:"password" binding:"required,min=8,max=20"`
 	VerificationToken string `json:"verificationToken" binding:"required"`
 }
 
@@ -24,12 +23,17 @@ func PostUser(context *gin.Context) {
 	var userRegistration models.UserRegistration
 	database.Database.Where("email = ?", user.Email).First(&userRegistration)
 
-	if userRegistration.VerificationToken != user.VerificationToken {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Verifcation token is wrong"})
+	if userRegistration.ID == 0 {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Registration not found"})
 		return
 	}
 
-	if _, err := models.NewUser(user.Email, user.Password, userRegistration); err != nil {
+	if userRegistration.VerificationToken != user.VerificationToken {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Verification token is wrong"})
+		return
+	}
+
+	if _, err := models.NewUser(user.Email, userRegistration); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

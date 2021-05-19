@@ -36,7 +36,7 @@ func GetAnalyzedTexts(context *gin.Context) {
 		analyzedTextSearchParams.People,
 		analyzedTextSearchParams.GPE,
 		startDate, endDate,
-		analyzedTextSearchParams.SourceID,
+		int(source.ID),
 	)
 
 	if err != nil {

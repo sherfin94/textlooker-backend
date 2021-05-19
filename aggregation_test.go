@@ -21,8 +21,8 @@ type AggregationTestSuite struct {
 
 func (suite *AggregationTestSuite) SetupSuite() {
 	email, password := "test7@test.com", "Abcd124!"
-	suite.UserRegistration, _ = models.NewUserRegistration(email)
-	suite.User, _ = models.NewUser(email, password, *suite.UserRegistration)
+	suite.UserRegistration, _ = models.NewUserRegistration(email, password)
+	suite.User, _ = models.NewUser(email, *suite.UserRegistration)
 	suite.Source, _ = models.NewSource("AAnother Source", suite.User)
 
 	data := map[string]interface{}{

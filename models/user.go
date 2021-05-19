@@ -4,7 +4,6 @@ import (
 	"textlooker-backend/database"
 
 	"github.com/go-playground/validator/v10"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -25,21 +24,13 @@ func (user *User) BeforeSave(database *gorm.DB) (err error) {
 		return err.(validator.ValidationErrors)
 	}
 
-	hashedPassword, hashingError := bcrypt.GenerateFromPassword([]byte(user.EncryptedPassword), 10)
-	if hashingError != nil {
-		return hashingError
-	} else {
-		user.EncryptedPassword = string(hashedPassword)
-		err = nil
-	}
-
 	return err
 }
 
-func NewUser(email string, password string, userRegistration UserRegistration) (*User, error) {
+func NewUser(email string, userRegistration UserRegistration) (*User, error) {
 	user := &User{
 		Email:             email,
-		EncryptedPassword: password,
+		EncryptedPassword: userRegistration.EncryptedPassword,
 		UserRegistration:  userRegistration,
 	}
 
