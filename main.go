@@ -31,6 +31,9 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	authMiddleware := middleware.GenerateJWTAuthMiddleware()
 
+	corsMiddleware := middleware.CORSMiddleware()
+	router.Use(corsMiddleware)
+
 	// Ping test
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
