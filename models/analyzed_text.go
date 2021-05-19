@@ -76,6 +76,7 @@ func GetAnalyzedTexts(
 				People:   hit.Source.People,
 				GPE:      hit.Source.GPE,
 				Tokens:   hit.Source.Tokens,
+				Date:     hit.Source.Date,
 			})
 		}
 	}
