@@ -1,5 +1,2 @@
 Put user tests in a suite
 make tests parallel
-
-don't allow creation of text without existing source : done
-Remove all log.fatalf : done
