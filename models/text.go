@@ -32,7 +32,7 @@ func NewText(content string, author []string, date time.Time, sourceID int) (tex
 	return text, nil
 }
 
-func GetTexts(content string, author string, dateStart time.Time, dateEnd time.Time, sourceID int) (texts []Text, err error) {
+func GetTexts(content string, author []string, dateStart time.Time, dateEnd time.Time, sourceID int) (texts []Text, err error) {
 	textQuery := elastic.NewTextQuery(content, author, dateStart, dateEnd, sourceID)
 	texts = []Text{}
 

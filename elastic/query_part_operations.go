@@ -21,13 +21,16 @@ func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
 	}
 }
 
-func generateBasicConditions(requiredDateRange dateRange, sourceID int, content string, author string) []interface{} {
-	return []interface{}{
-		rangePart{Range: datePart{Date: requiredDateRange}},
-		matchPart{Match: sourcePart{SourceID: sourceID}},
-		wildcardPart{WildCard: contentPart{Content: content}},
-		wildcardPart{WildCard: authorPart{Author: author}},
+func generateBasicConditions(requiredDateRange dateRange, sourceID int, content string, author []string) []interface{} {
+	var parts []interface{}
+	for _, authorName := range author {
+		parts = append(parts, matchPart{Match: authorPart{Author: authorName}})
 	}
+	parts = append(parts, rangePart{Range: datePart{Date: requiredDateRange}})
+	parts = append(parts, matchPart{Match: sourcePart{SourceID: sourceID}})
+	parts = append(parts, wildcardPart{WildCard: contentPart{Content: content}})
+
+	return parts
 }
 
 func generateTextQuery(conditions []interface{}) TextQuery {

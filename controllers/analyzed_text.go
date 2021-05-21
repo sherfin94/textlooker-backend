@@ -10,12 +10,12 @@ import (
 
 type AnalyzedTextSearchParams struct {
 	Content   string   `form:"content,default=*"`
-	Author    string   `form:"author,default=*"`
+	Author    []string `form:"author[]"`
 	StartDate string   `form:"startDate" validate:"required"`
 	EndDate   string   `form:"endDate" validate:"required"`
 	SourceID  int      `form:"sourceID" validate:"required"`
-	People    []string `form:"people"`
-	GPE       []string `form:"gpe"`
+	People    []string `form:"people[]"`
+	GPE       []string `form:"gpe[]"`
 }
 
 func GetAnalyzedTexts(context *gin.Context) {

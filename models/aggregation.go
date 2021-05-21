@@ -23,7 +23,7 @@ type Aggregation struct {
 }
 
 func CreateGeneralAggregationFromQueryResult(queryResult elastic.QueryResult) (aggregation Aggregation) {
-	var authors, people, gpe, tokens, dates []CountItem
+	authors, people, gpe, tokens, dates := []CountItem{}, []CountItem{}, []CountItem{}, []CountItem{}, []CountItem{}
 
 	for _, bucket := range queryResult.AggregationsPart.AuthorAggregation.Buckets {
 		authors = append(authors, CountItem{Value: bucket.Key, Count: bucket.Value})
@@ -64,7 +64,7 @@ func CreatePerDateAggregationFromQueryResult(queryResult elastic.QueryResult) (c
 }
 
 func GetAggregation(
-	searchText string, searchAuthor string, people []string, gpe []string,
+	searchText string, searchAuthor []string, people []string, gpe []string,
 	startDate time.Time, endDate time.Time, sourceID int,
 ) (aggregation Aggregation, err error) {
 
@@ -84,7 +84,7 @@ func GetAggregation(
 }
 
 func GetPerDateAggregation(
-	searchText string, searchAuthor string, people []string, gpe []string,
+	searchText string, searchAuthor []string, people []string, gpe []string,
 	startDate time.Time, endDate time.Time, sourceID int, field elastic.AggregationField,
 ) (counts []CountItem, err error) {
 

@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-func NewAnalyzedTextQuery(content string, author string, people []string, gpe []string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
+func NewAnalyzedTextQuery(content string, author []string, people []string, gpe []string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
 	conditions := generateBasicConditions(
 		makeDateRange(startDate, endDate),
 		sourceID, content, author,

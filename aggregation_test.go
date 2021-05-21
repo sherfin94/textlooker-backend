@@ -62,7 +62,7 @@ func (suite *TextTestSuite) TestGeneralAggregations() {
 
 	startDate := time.Now().Add(-time.Minute)
 	endDate := time.Now().Add(time.Minute)
-	aggregation, _ := models.GetAggregation("*", "*", []string{}, []string{}, startDate, endDate, int(suite.Source.ID))
+	aggregation, _ := models.GetAggregation("*", []string{}, []string{}, []string{}, startDate, endDate, int(suite.Source.ID))
 
 	expectedAuthorsData := []models.CountItem{
 		{Value: "AuthorB", Count: 4},
@@ -107,7 +107,7 @@ func (suite *TextTestSuite) TestPerDateAggregation() {
 
 	startDate := time.Now().Add(-time.Minute)
 	endDate := time.Now().Add(time.Minute)
-	counts, _ := models.GetPerDateAggregation("*", "*", []string{}, []string{}, startDate, endDate, int(suite.Source.ID), elastic.People)
+	counts, _ := models.GetPerDateAggregation("*", []string{}, []string{}, []string{}, startDate, endDate, int(suite.Source.ID), elastic.People)
 
 	// expectedGPEData := []models.CountItem{
 	// 	{Value: "Apple", Count: 1},

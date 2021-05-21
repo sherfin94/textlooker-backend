@@ -53,11 +53,11 @@ func PostText(context *gin.Context) {
 }
 
 type TextSearchParams struct {
-	Content   string `form:"content,default=*"`
-	Author    string `form:"author,default=*"`
-	StartDate string `form:"startDate" validate:"required"`
-	EndDate   string `form:"endDate" validate:"required"`
-	SourceID  int    `form:"sourceID" validate:"required"`
+	Content   string   `form:"content,default=*"`
+	Author    []string `form:"author[],default="`
+	StartDate string   `form:"startDate" validate:"required"`
+	EndDate   string   `form:"endDate" validate:"required"`
+	SourceID  int      `form:"sourceID" validate:"required"`
 }
 
 func GetTexts(context *gin.Context) {

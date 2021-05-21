@@ -1,2 +1,4 @@
 Put user tests in a suite
 make tests parallel
+
+set date automatically if not provided
