@@ -77,7 +77,7 @@ func (suite *TextTestSuite) TestGetTexts() {
 
 	data := map[string]string{
 		"content":   randomText,
-		"author":    randomAuthor,
+		"author[]":  randomAuthor,
 		"startDate": time.Now().Add(-3 * time.Hour).Format("Jan 2 15:04:05 -0700 MST 2006"),
 		"endDate":   time.Now().Add(5 * time.Second).Format("Jan 2 15:04:05 -0700 MST 2006"),
 		"sourceID":  fmt.Sprint(suite.Source.ID),
