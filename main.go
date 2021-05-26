@@ -10,6 +10,8 @@ import (
 	"textlooker-backend/middleware"
 	"textlooker-backend/models"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,6 +30,9 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	case deployment.Production:
 		router = gin.New()
 	}
+
+	store := cookie.NewStore([]byte("auth"))
+	router.Use(sessions.Sessions("authsession", store))
 
 	authMiddleware := middleware.GenerateJWTAuthMiddleware()
 
