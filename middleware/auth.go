@@ -25,8 +25,8 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:          "\"auth zone\"",
 		Key:            []byte(deployment.GetEnv("JWT_SECRET_KEY")),
-		Timeout:        time.Hour,
-		MaxRefresh:     time.Hour,
+		Timeout:        30 * time.Minute,
+		MaxRefresh:     30 * time.Minute,
 		IdentityKey:    identityKey,
 		SendCookie:     true,
 		SecureCookie:   true,    //non HTTPS dev environments
