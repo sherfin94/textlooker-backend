@@ -47,6 +47,7 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	router.POST("/users", controllers.PostUser)
 	router.POST("/user_registrations", controllers.PostUserRegistration)
 	router.POST("/login", authMiddleware.LoginHandler)
+	router.GET("/logout", authMiddleware.LogoutHandler)
 
 	auth := router.Group("/auth")
 	auth.Use(authMiddleware.MiddlewareFunc())

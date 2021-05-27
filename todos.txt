@@ -4,11 +4,11 @@ make tests parallel
 set date automatically if not provided
 set expiry date of tokens to 20 minutes
 
-
+SecureCookie should be set to true in auth.go, as well as samesite configurations
 ----------------------------------------
 
 
-Add session module
+Add session module : done
 Create week-long JWT and store it in session
 create an end-point to auto-login
   In that action, send back a standard 20 minute JWT

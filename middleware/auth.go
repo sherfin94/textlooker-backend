@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"log"
+	"net/http"
 	"textlooker-backend/database"
 	"textlooker-backend/deployment"
 	"textlooker-backend/models"
@@ -22,11 +23,30 @@ var identityKey string = "user"
 
 func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "\"auth zone\"",
-		Key:         []byte(deployment.GetEnv("JWT_SECRET_KEY")),
-		Timeout:     time.Hour,
-		MaxRefresh:  time.Hour,
-		IdentityKey: identityKey,
+		Realm:          "\"auth zone\"",
+		Key:            []byte(deployment.GetEnv("JWT_SECRET_KEY")),
+		Timeout:        time.Hour,
+		MaxRefresh:     time.Hour,
+		IdentityKey:    identityKey,
+		SendCookie:     true,
+		SecureCookie:   true,    //non HTTPS dev environments
+		CookieHTTPOnly: true,    // JS can't modify
+		CookieName:     "token", // default jwt
+		TokenLookup:    "cookie:token",
+		CookieSameSite: http.SameSiteNoneMode, //SameSiteDefaultMode, SameSiteLaxMode, SameSiteStrictMode, SameSiteNoneMode
+
+		LoginResponse: func(context *gin.Context, status int, s string, t time.Time) {
+			context.AbortWithStatus(status)
+		},
+
+		RefreshResponse: func(context *gin.Context, status int, s string, t time.Time) {
+			context.AbortWithStatus(status)
+		},
+
+		LogoutResponse: func(context *gin.Context, status int) {
+			context.AbortWithStatus(status)
+		},
+
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(models.User); ok {
 				return jwt.MapClaims{
