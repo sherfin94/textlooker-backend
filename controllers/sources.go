@@ -35,10 +35,10 @@ func PostSource(context *gin.Context) {
 
 func GetSources(context *gin.Context) {
 	var sources []models.Source
-	var result []map[string]interface{}
+	result := []map[string]interface{}{}
 
 	user, _ := context.Get("user")
-	database.Database.Where("user_id = ?", user.(*models.User).ID).Find(&sources)
+	database.Database.Where("user_id = ?", user.(*models.User).ID).Order("updated_at desc").Find(&sources)
 
 	for _, source := range sources {
 		result = append(result, map[string]interface{}{

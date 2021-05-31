@@ -7,6 +7,4 @@ set expiry date of tokens to 20 minutes
 SecureCookie should be set to true in auth.go, as well as samesite configurations
 ----------------------------------------
 
-
-Add session module : done
-create an end-point to auto-login : done
+Make test suite accomodate cookie based authentication
