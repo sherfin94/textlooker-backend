@@ -18,24 +18,26 @@ import (
 
 var router *gin.Engine
 
-func Post(url string, data map[string]interface{}, token string) (map[string]interface{}, int) {
+func Post(url string, data map[string]interface{}, cookies []*http.Cookie) (map[string]interface{}, int, []*http.Cookie) {
 	marshalledData, _ := json.Marshal(data)
 	postBody := bytes.NewBuffer(marshalledData)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", url, postBody)
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "Bearer "+token)
+	for _, cookie := range cookies {
+		req.AddCookie(cookie)
+	}
 
 	router.ServeHTTP(w, req)
 
 	var response map[string]interface{}
 	json.Unmarshal(w.Body.Bytes(), &response)
 
-	return response, w.Code
+	return response, w.Code, w.Result().Cookies()
 }
 
-func Get(url string, data map[string]string, token string) (map[string]interface{}, int) {
+func Get(url string, data map[string]string, cookies []*http.Cookie) (map[string]interface{}, int) {
 	w := httptest.NewRecorder()
 
 	req, _ := http.NewRequest("GET", url, nil)
@@ -46,8 +48,10 @@ func Get(url string, data map[string]string, token string) (map[string]interface
 		}
 		req.URL.RawQuery = query.Encode()
 	}
+	for _, cookie := range cookies {
+		req.AddCookie(cookie)
+	}
 
-	req.Header.Add("Authorization", "Bearer "+token)
 	router.ServeHTTP(w, req)
 
 	var response map[string]interface{}
@@ -56,10 +60,14 @@ func Get(url string, data map[string]string, token string) (map[string]interface
 	return response, w.Code
 }
 
-func Delete(url string, token string) (map[string]interface{}, int) {
+func Delete(url string, cookies []*http.Cookie) (map[string]interface{}, int) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("DELETE", url, nil)
-	req.Header.Add("Authorization", "Bearer "+token)
+
+	for _, cookie := range cookies {
+		req.AddCookie(cookie)
+	}
+
 	router.ServeHTTP(w, req)
 
 	var response map[string]interface{}

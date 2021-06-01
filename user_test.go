@@ -16,7 +16,7 @@ func TestPostUser(t *testing.T) {
 		"verificationToken": userRegistration.VerificationToken,
 	}
 
-	response, code := Post("/users", data, "")
+	response, code, _ := Post("/users", data, nil)
 
 	assert.Equal(t, 200, code)
 	assert.Equal(t, "User created", response["status"])
@@ -28,7 +28,7 @@ func TestPostUserRegistration(t *testing.T) {
 		"password": "some password",
 	}
 
-	response, code := Post("/user_registrations", data, "")
+	response, code, _ := Post("/user_registrations", data, nil)
 
 	assert.Equal(t, 200, code)
 	assert.Equal(t, "User registration created", response["status"])
@@ -45,8 +45,8 @@ func TestPostLogin(t *testing.T) {
 		"email":    email,
 	}
 
-	response, code := Post("/login", data, "")
+	_, code, cookies := Post("/login", data, nil)
 
 	assert.Equal(t, 200, code)
-	assert.Equal(t, true, len(response["token"].(string)) > 0)
+	assert.Equal(t, true, len(cookies[0].Value) > 0)
 }

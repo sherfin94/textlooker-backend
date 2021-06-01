@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"testing"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
@@ -15,7 +16,7 @@ type TextTestSuite struct {
 	suite.Suite
 	UserRegistration *models.UserRegistration
 	User             *models.User
-	Token            string
+	Cookies          []*http.Cookie
 	Source           *models.Source
 }
 
@@ -30,8 +31,8 @@ func (suite *TextTestSuite) SetupSuite() {
 		"email":    email,
 	}
 
-	response, _ := Post("/login", data, suite.Token)
-	suite.Token = response["token"].(string)
+	_, _, cookies := Post("/login", data, nil)
+	suite.Cookies = cookies
 }
 
 func (suite *TextTestSuite) CleanupSuite() {
@@ -50,13 +51,13 @@ func (suite *TextTestSuite) TestPostText() {
 		"sourceID": suite.Source.ID,
 	}
 
-	response, code := Post("/auth/text", data, suite.Token)
+	response, code, _ := Post("/auth/text", data, suite.Cookies)
 
 	assert.Equal(suite.T(), 200, code)
 	assert.Equal(suite.T(), "Text saved", response["status"])
 
 	data["sourceID"] = 0
-	_, code = Post("/auth/text", data, suite.Token)
+	_, code, _ = Post("/auth/text", data, suite.Cookies)
 	assert.Equal(suite.T(), 400, code)
 }
 
@@ -83,7 +84,7 @@ func (suite *TextTestSuite) TestGetTexts() {
 		"sourceID":  fmt.Sprint(suite.Source.ID),
 	}
 
-	response, code := Get("/auth/text", data, suite.Token)
+	response, code := Get("/auth/text", data, suite.Cookies)
 
 	assert.Equal(suite.T(), 200, code)
 	assert.Contains(suite.T(), (response["texts"].([]interface{})[0].(map[string]interface{})["content"]), randomText)

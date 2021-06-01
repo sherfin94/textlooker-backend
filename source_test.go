@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"testing"
 	"textlooker-backend/database"
 	"textlooker-backend/models"
@@ -15,7 +16,7 @@ type SourceTestSuite struct {
 	suite.Suite
 	UserRegistration *models.UserRegistration
 	User             *models.User
-	Token            string
+	Cookies          []*http.Cookie
 }
 
 func (suite *SourceTestSuite) SetupSuite() {
@@ -29,8 +30,8 @@ func (suite *SourceTestSuite) SetupSuite() {
 		"email":    email,
 	}
 
-	response, _ := Post("/login", data, suite.Token)
-	suite.Token = response["token"].(string)
+	_, _, cookies := Post("/login", data, nil)
+	suite.Cookies = cookies
 }
 
 func (suite *SourceTestSuite) CleanupSuite() {
@@ -50,13 +51,13 @@ func (suite *SourceTestSuite) TestPostSource() {
 	data := map[string]interface{}{
 		"name": "My source name",
 	}
-	response, code := Post("/auth/sources", data, suite.Token)
+	response, code, _ := Post("/auth/sources", data, suite.Cookies)
 
 	assert.Equal(suite.T(), 200, code)
 	assert.Equal(suite.T(), "Source created", response["status"])
 	assert.NotNil(suite.T(), response["sourceID"])
 
-	_, code = Post("/auth/sources", data, suite.Token)
+	_, code, _ = Post("/auth/sources", data, suite.Cookies)
 	assert.NotEqual(suite.T(), 200, code)
 }
 
@@ -64,7 +65,7 @@ func (suite *SourceTestSuite) TestGetSource() {
 
 	source, _ := models.NewSource("My new source", suite.User)
 
-	response, code := Get("/auth/sources", nil, suite.Token)
+	response, code := Get("/auth/sources", nil, suite.Cookies)
 
 	respondedSources := response["sources"].([]interface{})
 
@@ -74,8 +75,7 @@ func (suite *SourceTestSuite) TestGetSource() {
 
 func (suite *SourceTestSuite) TestDeleteSource() {
 	source, _ := models.NewSource("Another source", suite.User)
-
-	_, code := Delete("/auth/sources/"+fmt.Sprint(source.ID), suite.Token)
+	_, code := Delete("/auth/sources/"+fmt.Sprint(source.ID), suite.Cookies)
 
 	assert.Equal(suite.T(), 200, code)
 }

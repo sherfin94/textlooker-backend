@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"testing"
 	"textlooker-backend/elastic"
 	"textlooker-backend/models"
@@ -15,7 +16,7 @@ type AggregationTestSuite struct {
 	suite.Suite
 	UserRegistration *models.UserRegistration
 	User             *models.User
-	Token            string
+	Cookies          []*http.Cookie
 	Source           *models.Source
 }
 
@@ -30,8 +31,8 @@ func (suite *AggregationTestSuite) SetupSuite() {
 		"email":    email,
 	}
 
-	response, _ := Post("/login", data, suite.Token)
-	suite.Token = response["token"].(string)
+	_, _, cookies := Post("/login", data, nil)
+	suite.Cookies = cookies
 }
 
 func (suite *AggregationTestSuite) CleanupSuite() {

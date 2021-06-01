@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"testing"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
@@ -16,7 +17,7 @@ type AnalyzedTextTestSuite struct {
 	suite.Suite
 	UserRegistration *models.UserRegistration
 	User             *models.User
-	Token            string
+	Cookies          []*http.Cookie
 	Source           *models.Source
 }
 
@@ -31,8 +32,8 @@ func (suite *AnalyzedTextTestSuite) SetupSuite() {
 		"email":    email,
 	}
 
-	response, _ := Post("/login", data, suite.Token)
-	suite.Token = response["token"].(string)
+	_, _, cookies := Post("/login", data, nil)
+	suite.Cookies = cookies
 }
 
 func (suite *AnalyzedTextTestSuite) CleanupSuite() {
@@ -67,7 +68,7 @@ func (suite *TextTestSuite) TestGetAnalyzedTexts() {
 		"people":    "Abraham Lincoln",
 	}
 
-	response, code := Get("/auth/analyzed_text", data, suite.Token)
+	response, code := Get("/auth/analyzed_text", data, suite.Cookies)
 
 	type textPart struct {
 		Content string   `json:"content"`
