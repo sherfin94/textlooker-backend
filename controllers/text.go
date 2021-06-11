@@ -2,10 +2,9 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 	"textlooker-backend/database"
+	"textlooker-backend/handlers"
 	"textlooker-backend/models"
-	"textlooker-backend/util"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +12,11 @@ import (
 
 const ReferenceDate = "Jan 2 15:04:05 -0700 MST 2006"
 
-type Text struct {
+type BatchTextParams struct {
+	Batch []TextParams `json:"batch"`
+}
+
+type TextParams struct {
 	Content  string   `json:"content" validate:"required"`
 	Author   []string `json:"author" validate:"required"`
 	Date     string   `json:"date" validate:"required"`
@@ -21,37 +24,30 @@ type Text struct {
 }
 
 func PostText(context *gin.Context) {
-	var textParams Text
-	var source models.Source
-
-	if err := context.ShouldBindJSON(&textParams); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	dateAsInteger, err := strconv.ParseInt(textParams.Date, 10, 64)
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	time := util.ParseTimestamp(float64(dateAsInteger))
-
+	var batchParams BatchTextParams
 	user, _ := context.Get("user")
-	database.Database.Where("user_id = ? and id = ?", user.(*models.User).ID, textParams.SourceID).Find(&source)
-	if source.ID == 0 {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Source not found"})
+
+	if err := context.ShouldBindJSON(&batchParams); err != nil {
+		println("shashi")
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if text, err := models.NewText(textParams.Content, textParams.Author, *time, int(source.ID)); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	} else {
-		go text.SendToProcessQueue()
+	count := 0
+	for _, textParams := range batchParams.Batch {
+		if err := handlers.Text(
+			textParams.Content,
+			textParams.Author,
+			textParams.Date,
+			textParams.SourceID,
+			user.(*models.User),
+		); err == nil {
+			count += 1
+		}
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"status": "Text saved",
+		"savedTextCount": count,
 	})
 }
 

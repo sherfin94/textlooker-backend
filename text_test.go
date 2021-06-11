@@ -45,21 +45,29 @@ func TestTextTestSuite(t *testing.T) {
 }
 
 func (suite *TextTestSuite) TestPostText() {
-	data := map[string]interface{}{
+	text := map[string]interface{}{
 		"content":  "Abraham Lincoln is an amazing President. The United States of America is a good country.",
 		"author":   []string{"Some person", "some other person"},
 		"date":     strconv.FormatInt(time.Now().Unix(), 10),
 		"sourceID": suite.Source.ID,
 	}
 
+	data := map[string]interface{}{
+		"batch": []interface{}{text},
+	}
+
 	response, code, _ := Post("/auth/text", data, suite.Cookies)
 
 	assert.Equal(suite.T(), 200, code)
-	assert.Equal(suite.T(), "Text saved", response["status"])
+	assert.Equal(suite.T(), float64(1), response["savedTextCount"])
 
-	data["sourceID"] = 0
-	_, code, _ = Post("/auth/text", data, suite.Cookies)
-	assert.Equal(suite.T(), 400, code)
+	text["sourceID"] = 0
+	data = map[string]interface{}{
+		"batch": []interface{}{text},
+	}
+	response, code, _ = Post("/auth/text", data, suite.Cookies)
+	assert.Equal(suite.T(), 200, code)
+	assert.Equal(suite.T(), float64(0), response["savedTextCount"])
 }
 
 func (suite *TextTestSuite) TestGetTextsFunc() {
