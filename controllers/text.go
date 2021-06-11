@@ -13,17 +13,18 @@ import (
 const ReferenceDate = "Jan 2 15:04:05 -0700 MST 2006"
 
 type BatchTextParams struct {
-	Batch []TextParams `json:"batch"`
+	Batch    []TextParams `json:"batch"`
+	SourceID int          `json:"sourceID" validate:"required"`
 }
 
 type TextParams struct {
-	Content  string   `json:"content" validate:"required"`
-	Author   []string `json:"author" validate:"required"`
-	Date     string   `json:"date" validate:"required"`
-	SourceID int      `json:"sourceID" validate:"required"`
+	Content string   `json:"content" validate:"required"`
+	Author  []string `json:"author" validate:"required"`
+	Date    string   `json:"date" validate:"required"`
 }
 
 func PostText(context *gin.Context) {
+	var source models.Source
 	var batchParams BatchTextParams
 	user, _ := context.Get("user")
 
@@ -33,14 +34,19 @@ func PostText(context *gin.Context) {
 		return
 	}
 
+	database.Database.Where("user_id = ? and id = ?", user.(*models.User).ID, batchParams.SourceID).Find(&source)
+	if source.ID == 0 {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Source could not be validated"})
+		return
+	}
+
 	count := 0
 	for _, textParams := range batchParams.Batch {
 		if err := handlers.Text(
 			textParams.Content,
 			textParams.Author,
 			textParams.Date,
-			textParams.SourceID,
-			user.(*models.User),
+			int(source.ID),
 		); err == nil {
 			count += 1
 		}
