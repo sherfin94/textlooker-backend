@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"textlooker-backend/database"
 	"textlooker-backend/models"
+	"textlooker-backend/util"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,32 +21,33 @@ type Text struct {
 }
 
 func PostText(context *gin.Context) {
-	var text Text
+	var textParams Text
 	var source models.Source
 
-	if err := context.ShouldBindJSON(&text); err != nil {
+	if err := context.ShouldBindJSON(&textParams); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	time, err := time.Parse(ReferenceDate, text.Date)
+	dateAsInteger, err := strconv.ParseInt(textParams.Date, 10, 64)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	time := util.ParseTimestamp(float64(dateAsInteger))
 
 	user, _ := context.Get("user")
-	database.Database.Where("user_id = ? and id = ?", user.(*models.User).ID, text.SourceID).Find(&source)
+	database.Database.Where("user_id = ? and id = ?", user.(*models.User).ID, textParams.SourceID).Find(&source)
 	if source.ID == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Source not found"})
 		return
 	}
 
-	if text, err := models.NewText(text.Content, text.Author, time, int(source.ID)); err != nil {
+	if text, err := models.NewText(textParams.Content, textParams.Author, *time, int(source.ID)); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} else {
-		go models.NewAnalyzedText(text)
+		go text.SendToProcessQueue()
 	}
 
 	context.JSON(http.StatusOK, gin.H{

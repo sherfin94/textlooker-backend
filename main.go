@@ -7,6 +7,7 @@ import (
 	"textlooker-backend/database"
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
+	"textlooker-backend/kafka"
 	"textlooker-backend/middleware"
 	"textlooker-backend/models"
 
@@ -80,8 +81,11 @@ func main() {
 	case "run":
 		elastic.Initiate()
 		database.ConnectDatabase("gorm", database.Silent)
+
+		channel := make(chan kafka.Text)
+		go kafka.InitializeProducer(&channel)
+
 		r := SetupRouter(deployment.Development)
 		r.Run(":8080")
 	}
-
 }

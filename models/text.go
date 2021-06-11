@@ -4,6 +4,7 @@ import (
 	"log"
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
+	"textlooker-backend/kafka"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -56,4 +57,14 @@ func GetTexts(content string, author []string, dateStart time.Time, dateEnd time
 		}
 	}
 	return texts, err
+}
+
+func (text *Text) SendToProcessQueue() {
+	*kafka.TextProcessChannel <- kafka.Text{
+		ID: text.ID,
+		Content: text.Content,
+		Author: text.Author,
+		SourceID: text.SourceID,
+		Date: text.Date.Format("2006-01-02T15:04:05-0700"),
+	}
 }
