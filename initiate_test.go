@@ -9,6 +9,7 @@ import (
 	"textlooker-backend/database"
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
+	"textlooker-backend/kafka"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
 
@@ -81,6 +82,10 @@ func TestMain(m *testing.M) {
 	database.ConnectDatabase("gorm_test", database.Silent)
 	elastic.Initiate()
 	CleanupDatabase()
+
+	channel := make(chan kafka.Text)
+	go kafka.InitializeProducer(&channel)
+
 	router = SetupRouter(deployment.Test)
 	m.Run()
 }

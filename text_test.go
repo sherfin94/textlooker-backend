@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"testing"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
@@ -47,7 +48,7 @@ func (suite *TextTestSuite) TestPostText() {
 	data := map[string]interface{}{
 		"content":  "Abraham Lincoln is an amazing President. The United States of America is a good country.",
 		"author":   []string{"Some person", "some other person"},
-		"date":     time.Now().Format("Jan 2 15:04:05 -0700 MST 2006"),
+		"date":     strconv.FormatInt(time.Now().Unix(), 10),
 		"sourceID": suite.Source.ID,
 	}
 

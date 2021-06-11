@@ -3,6 +3,7 @@ package kafka
 import (
 	"encoding/json"
 	"log"
+	"textlooker-backend/deployment"
 
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 )
@@ -19,6 +20,11 @@ var TextProcessChannel *chan Text
 
 func InitializeProducer(channel *chan Text) {
 	TextProcessChannel = channel
+
+	if deployment.CurrentRunMode == deployment.Test {
+		return
+	}
+
 	producer, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
 	if err != nil {
 		panic(err)
