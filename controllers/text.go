@@ -46,11 +46,9 @@ func PostText(context *gin.Context) {
 			textParams.Content,
 			textParams.Author,
 			textParams.Date,
-			int(source.ID),
+			&source,
 		); err == nil {
 			count += 1
-		} else {
-			println(err.Error())
 		}
 	}
 

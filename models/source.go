@@ -12,8 +12,8 @@ type Source struct {
 	Name            string `gorm:"not null" validate:"required"`
 	UserID          int    `gorm:"not null"`
 	User            *User  `validate:"structonly"`
-	DateAvailable   bool   `gorm:"not null" validate:"required"`
-	AuthorAvailable bool   `gorm:"not null" validate:"required"`
+	DateAvailable   bool   `gorm:"not null"`
+	AuthorAvailable bool   `gorm:"not null"`
 }
 
 func (source *Source) BeforeSave(database *gorm.DB) (err error) {
@@ -36,6 +36,5 @@ func NewSource(name string, user *User, dateAvailable bool, authorAvailable bool
 	}
 
 	result := database.Database.Create(source)
-
 	return source, result.Error
 }
