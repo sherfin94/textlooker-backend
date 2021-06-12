@@ -44,8 +44,10 @@ func GetSources(context *gin.Context) {
 
 	for _, source := range sources {
 		result = append(result, map[string]interface{}{
-			"name": source.Name,
-			"id":   source.ID,
+			"name":            source.Name,
+			"id":              source.ID,
+			"authorAvailable": source.AuthorAvailable,
+			"dateAvailable":   source.DateAvailable,
 		})
 	}
 
