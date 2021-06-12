@@ -49,7 +49,9 @@ func TestSourceTestSuite(t *testing.T) {
 
 func (suite *SourceTestSuite) TestPostSource() {
 	data := map[string]interface{}{
-		"name": "My source name",
+		"name":            "My source name",
+		"authorAvailable": true,
+		"dateAvailable":   true,
 	}
 	response, code, _ := Post("/auth/sources", data, suite.Cookies)
 
@@ -63,7 +65,7 @@ func (suite *SourceTestSuite) TestPostSource() {
 
 func (suite *SourceTestSuite) TestGetSource() {
 
-	source, _ := models.NewSource("My new source", suite.User)
+	source, _ := models.NewSource("My new source", suite.User, true, true)
 
 	response, code := Get("/auth/sources", nil, suite.Cookies)
 
@@ -74,7 +76,7 @@ func (suite *SourceTestSuite) TestGetSource() {
 }
 
 func (suite *SourceTestSuite) TestDeleteSource() {
-	source, _ := models.NewSource("Another source", suite.User)
+	source, _ := models.NewSource("Another source", suite.User, true, true)
 	_, code := Delete("/auth/sources/"+fmt.Sprint(source.ID), suite.Cookies)
 
 	assert.Equal(suite.T(), 200, code)

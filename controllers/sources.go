@@ -9,7 +9,9 @@ import (
 )
 
 type Source struct {
-	Name string `json:"name" binding:"required"`
+	Name            string `json:"name" binding:"required"`
+	AuthorAvailable bool   `json:"authorAvailable" binding:"required"`
+	DateAvailable   bool   `json:"dateAvailable" binding:"required"`
 }
 
 func PostSource(context *gin.Context) {
@@ -22,7 +24,7 @@ func PostSource(context *gin.Context) {
 
 	user, _ := context.Get("user")
 
-	if source, err := models.NewSource(source.Name, user.(*models.User)); err != nil {
+	if source, err := models.NewSource(source.Name, user.(*models.User), source.DateAvailable, source.AuthorAvailable); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} else {

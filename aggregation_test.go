@@ -24,7 +24,7 @@ func (suite *AggregationTestSuite) SetupSuite() {
 	email, password := "test7@test.com", "Abcd124!"
 	suite.UserRegistration, _ = models.NewUserRegistration(email, password)
 	suite.User, _ = models.NewUser(email, *suite.UserRegistration)
-	suite.Source, _ = models.NewSource("AAnother Source", suite.User)
+	suite.Source, _ = models.NewSource("AAnother Source", suite.User, true, true)
 
 	data := map[string]interface{}{
 		"password": password,
