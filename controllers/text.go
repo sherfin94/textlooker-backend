@@ -41,6 +41,7 @@ func PostText(context *gin.Context) {
 	}
 
 	count := 0
+	lastOccuredError := ""
 	for _, textParams := range batchParams.Batch {
 		if err := handlers.Text(
 			textParams.Content,
@@ -49,11 +50,14 @@ func PostText(context *gin.Context) {
 			&source,
 		); err == nil {
 			count += 1
+		} else {
+			lastOccuredError = err.Error()
 		}
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"savedTextCount": count,
+		"savedTextCount":   count,
+		"lastOccuredError": lastOccuredError,
 	})
 }
 
