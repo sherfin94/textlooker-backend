@@ -10,4 +10,9 @@ more secure access control headers
 fix date format strings
 
 set post limit
+make sure kafka commit settings are correct
+
+check if create topic is necessary
+
+introduce policies to limit maximum size of messages being passed along and processed across the system
 ----------------------------------------

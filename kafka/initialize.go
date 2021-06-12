@@ -12,7 +12,7 @@ type Text struct {
 	ID       string   `json:"id"`
 	Content  string   `json:"content"`
 	Author   []string `json:"author"`
-	Date     string   `json:"date"`
+	Date     string   `json:"date,omitempty"`
 	SourceID int      `json:"source_id"`
 }
 

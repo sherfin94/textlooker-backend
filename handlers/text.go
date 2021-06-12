@@ -7,13 +7,20 @@ import (
 )
 
 func Text(content string, author []string, date string, sourceID int) (err error) {
-	dateAsInteger, err := strconv.ParseInt(date, 10, 64)
-	if err != nil {
-		return err
+	var text models.Text
+	var dateAsInteger int64
+	if len(date) > 0 {
+		dateAsInteger, err = strconv.ParseInt(date, 10, 64)
+		time := util.ParseTimestamp(float64(dateAsInteger))
+		if err != nil {
+			return err
+		}
+		text, err = models.NewText(content, author, *time, int(sourceID))
+	} else {
+		text, err = models.NewTextWithoutDate(content, author, int(sourceID))
 	}
-	time := util.ParseTimestamp(float64(dateAsInteger))
 
-	if text, err := models.NewText(content, author, *time, int(sourceID)); err != nil {
+	if err != nil {
 		return err
 	} else {
 		go text.SendToProcessQueue()

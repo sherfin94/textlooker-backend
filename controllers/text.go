@@ -19,8 +19,8 @@ type BatchTextParams struct {
 
 type TextParams struct {
 	Content string   `json:"content" validate:"required"`
-	Author  []string `json:"author" validate:"required"`
-	Date    string   `json:"date" validate:"required"`
+	Author  []string `json:"author,omitempty" validate:"required"`
+	Date    string   `json:"date,omitempty" validate:"required"`
 }
 
 func PostText(context *gin.Context) {
@@ -49,6 +49,8 @@ func PostText(context *gin.Context) {
 			int(source.ID),
 		); err == nil {
 			count += 1
+		} else {
+			println(err.Error())
 		}
 	}
 

@@ -13,14 +13,28 @@ import (
 type Text struct {
 	ID       string    `json:"-"`
 	Content  string    `json:"content" validate:"required"`
-	Author   []string  `json:"author" validate:"required"`
-	Date     time.Time `json:"date" validate:"required"`
+	Author   []string  `json:"author"`
+	Date     time.Time `json:"date,omitempty"`
 	SourceID int       `json:"source_id" validate:"required"`
 	Analyzed bool      `json:"analyzed"`
 }
 
 func NewText(content string, author []string, date time.Time, sourceID int) (text Text, err error) {
 	text = Text{Content: content, Author: author, Date: date, SourceID: sourceID, Analyzed: false}
+	validator := validator.New()
+	if err = validator.Struct(text); err != nil {
+		return text, err
+	}
+
+	if text.ID, err = elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_TEXT"), text, ""); err != nil {
+		return text, err
+	}
+
+	return text, nil
+}
+
+func NewTextWithoutDate(content string, author []string, sourceID int) (text Text, err error) {
+	text = Text{Content: content, Author: author, SourceID: sourceID, Analyzed: false}
 	validator := validator.New()
 	if err = validator.Struct(text); err != nil {
 		return text, err
@@ -60,11 +74,16 @@ func GetTexts(content string, author []string, dateStart time.Time, dateEnd time
 }
 
 func (text *Text) SendToProcessQueue() {
-	*kafka.TextProcessChannel <- kafka.Text{
-		ID: text.ID,
-		Content: text.Content,
-		Author: text.Author,
+	kafkaText := kafka.Text{
+		ID:       text.ID,
+		Content:  text.Content,
+		Author:   text.Author,
 		SourceID: text.SourceID,
-		Date: text.Date.Format("2006-01-02T15:04:05-0700"),
 	}
+
+	if !text.Date.IsZero() {
+		kafkaText.Date = text.Date.Format("2006-01-02T15:04:05-0700")
+	}
+
+	*kafka.TextProcessChannel <- kafkaText
 }
