@@ -48,6 +48,7 @@ func GetSources(context *gin.Context) {
 			"id":              source.ID,
 			"authorAvailable": source.AuthorAvailable,
 			"dateAvailable":   source.DateAvailable,
+			"token":           source.ApiToken,
 		})
 	}
 

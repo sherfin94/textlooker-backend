@@ -2,8 +2,9 @@ package api
 
 import (
 	"net/http"
-	"textlooker-backend/handlers"
+	apihandlers "textlooker-backend/api_handlers"
 	"textlooker-backend/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,18 +34,35 @@ func PostText(context *gin.Context) {
 	source = sourceData.(*models.Source)
 
 	count := 0
+	lastOccuringErrorMessage := ""
 	for _, textParams := range batchParams.Batch {
-		if err := handlers.Text(
-			textParams.Content,
-			textParams.Author,
-			textParams.Date,
-			source,
-		); err == nil {
-			count += 1
+		date, err := time.Parse("2006-01-02T15:04:05-0700", textParams.Date)
+		if err == nil {
+			if err := apihandlers.TextWithDate(
+				textParams.Content,
+				textParams.Author,
+				date,
+				source,
+			); err == nil {
+				count += 1
+			} else {
+				lastOccuringErrorMessage = err.Error()
+			}
+		} else {
+			if err := apihandlers.TextWithoutDate(
+				textParams.Content,
+				textParams.Author,
+				source,
+			); err == nil {
+				count += 1
+			} else {
+				lastOccuringErrorMessage = err.Error()
+			}
 		}
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"savedTextCount": count,
+		"savedTextCount":           count,
+		"lastOccuringErrorMessage": lastOccuringErrorMessage,
 	})
 }
