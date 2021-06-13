@@ -59,6 +59,9 @@ func (suite *SourceTestSuite) TestPostSource() {
 	assert.Equal(suite.T(), "Source created", response["status"])
 	assert.NotNil(suite.T(), response["sourceID"])
 
+	source, _ := models.GetSourceByID(int(response["sourceID"].(float64)))
+	assert.GreaterOrEqual(suite.T(), len(source.ApiToken), 10)
+
 	_, code, _ = Post("/auth/sources", data, suite.Cookies)
 	assert.NotEqual(suite.T(), 200, code)
 }

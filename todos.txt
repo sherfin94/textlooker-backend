@@ -15,4 +15,6 @@ make sure kafka commit settings are correct
 check if create topic is necessary
 
 introduce policies to limit maximum size of messages being passed along and processed across the system
+
+block access to login areas for non-logged in user
 ----------------------------------------
