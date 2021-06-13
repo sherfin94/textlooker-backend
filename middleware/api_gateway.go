@@ -1,6 +1,9 @@
 package middleware
 
 import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"textlooker-backend/models"
 
@@ -8,14 +11,23 @@ import (
 )
 
 type apiGatewayParams struct {
-	ApiToken string `json:"apiToken"`
+	ApiToken string `json:"token"`
 }
 
 func APIGateway() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var params apiGatewayParams
 
-		if err := context.ShouldBindJSON(&params); err != nil {
+		requestBody := context.Request.Body
+		bodyBytes, err := ioutil.ReadAll(requestBody)
+		context.Request.Body = ioutil.NopCloser(bytes.NewReader(bodyBytes))
+
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+
+		err = json.Unmarshal(bodyBytes, &params)
+		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -24,10 +36,10 @@ func APIGateway() gin.HandlerFunc {
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{"error": "Source not found"})
 			return
+		} else {
+			context.Set("source", source)
+			context.Next()
 		}
 
-		context.Set("source-id", source.ID)
-
-		context.Next()
 	}
 }

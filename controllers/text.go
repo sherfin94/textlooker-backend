@@ -29,7 +29,6 @@ func PostText(context *gin.Context) {
 	user, _ := context.Get("user")
 
 	if err := context.ShouldBindJSON(&batchParams); err != nil {
-		println("shashi")
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"textlooker-backend/api"
 	"textlooker-backend/controllers"
 	"textlooker-backend/database"
 	"textlooker-backend/deployment"
@@ -70,6 +71,8 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	apiGateway := router.Group("/api")
 	apiGateway.Use(apiGatewayMiddleware)
+
+	apiGateway.POST("/text", api.PostText)
 
 	return router
 }
