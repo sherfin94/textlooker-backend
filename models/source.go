@@ -16,7 +16,7 @@ type Source struct {
 	User            *User  `validate:"structonly"`
 	DateAvailable   bool   `gorm:"not null"`
 	AuthorAvailable bool   `gorm:"not null"`
-	ApiToken        string `gorm:"not null" validate:"required,min=10"`
+	ApiToken        string `gorm:"not null,index:api_token,unique" validate:"required,min=10"`
 }
 
 func (source *Source) BeforeSave(database *gorm.DB) (err error) {
@@ -45,6 +45,17 @@ func NewSource(name string, user *User, dateAvailable bool, authorAvailable bool
 
 func GetSourceByID(sourceID int) (source *Source, err error) {
 	result := database.Database.Where("id = ?", sourceID).Find(&source)
+
+	if result.Error != nil {
+		err = errors.New("source not found")
+		return source, err
+	}
+
+	return source, err
+}
+
+func GetSourceByToken(token string) (source *Source, err error) {
+	result := database.Database.Where("api_token = ?", token).Find(&source)
 
 	if result.Error != nil {
 		err = errors.New("source not found")

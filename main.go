@@ -36,6 +36,7 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	router.Use(sessions.Sessions("authsession", store))
 
 	authMiddleware := middleware.GenerateJWTAuthMiddleware()
+	apiGatewayMiddleware := middleware.APIGateway()
 
 	corsMiddleware := middleware.CORSMiddleware()
 	router.Use(corsMiddleware)
@@ -66,6 +67,9 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	auth.GET("/general_aggregation", controllers.GetGeneralAggregation)
 	auth.GET("/per_date_aggregation", controllers.GetPerDateAggregation)
+
+	apiGateway := router.Group("/api")
+	apiGateway.Use(apiGatewayMiddleware)
 
 	return router
 }
