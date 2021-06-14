@@ -26,7 +26,7 @@ func PostText(context *gin.Context) {
 	var batchParams BatchTextParams
 
 	if err := context.ShouldBindJSON(&batchParams); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Request is not formed properly. Please refer to the API documentation."})
 		return
 	}
 
