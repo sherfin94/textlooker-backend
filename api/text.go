@@ -36,7 +36,7 @@ func PostText(context *gin.Context) {
 	count := 0
 	lastOccuringErrorMessage := ""
 	for _, textParams := range batchParams.Batch {
-		date, err := time.Parse("2006-01-02T15:04:05-0700", textParams.Date)
+		date, err := time.Parse("2006-01-02T15:04:05-07:00", textParams.Date)
 		if err == nil {
 			if err := apihandlers.TextWithDate(
 				textParams.Content,

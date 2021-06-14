@@ -26,7 +26,7 @@ func TextWithDate(content string, author []string, date time.Time, source *model
 
 func TextWithoutDate(content string, author []string, source *models.Source) (err error) {
 	if source.DateAvailable {
-		return errors.New("this source has date enabled, so date must be provided along with data")
+		return errors.New("Date could not be parsed. This source has date enabled, so date must be provided in the format YYYY-MM-DDThh:mm:ssTZD. Please check API documentation for more details.")
 	}
 
 	var text models.Text
