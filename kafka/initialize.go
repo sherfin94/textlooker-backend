@@ -4,16 +4,20 @@ import (
 	"encoding/json"
 	"log"
 	"textlooker-backend/deployment"
+	"time"
 
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 )
 
 type Text struct {
-	ID       string   `json:"id"`
-	Content  string   `json:"content"`
-	Author   []string `json:"author"`
-	Date     string   `json:"date,omitempty"`
-	SourceID int      `json:"source_id"`
+	ID        string    `json:"id"`
+	Content   string    `json:"content"`
+	Author    []string  `json:"author"`
+	Date      string    `json:"date,omitempty"`
+	SourceID  int       `json:"source_id"`
+	CreatedAt time.Time `json:"created_at" validate:"required"`
+	UpdatedAt time.Time `json:"updated_at" validate:"required"`
+	DeletedAt time.Time `json:"deleted_at"`
 }
 
 var TextProcessChannel *chan Text

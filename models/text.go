@@ -11,16 +11,28 @@ import (
 )
 
 type Text struct {
-	ID       string    `json:"-"`
-	Content  string    `json:"content" validate:"required"`
-	Author   []string  `json:"author"`
-	Date     time.Time `json:"date,omitempty"`
-	SourceID int       `json:"source_id" validate:"required"`
-	Analyzed bool      `json:"analyzed"`
+	ID        string    `json:"-"`
+	Content   string    `json:"content" validate:"required"`
+	Author    []string  `json:"author"`
+	Date      time.Time `json:"date,omitempty"`
+	SourceID  int       `json:"source_id" validate:"required"`
+	Analyzed  bool      `json:"analyzed"`
+	CreatedAt time.Time `json:"created_at" validate:"required"`
+	UpdatedAt time.Time `json:"updated_at" validate:"required"`
+	DeletedAt time.Time `json:"deleted_at"`
 }
 
 func NewText(content string, author []string, date time.Time, sourceID int) (text Text, err error) {
-	text = Text{Content: content, Author: author, Date: date, SourceID: sourceID, Analyzed: false}
+	text = Text{
+		Content:   content,
+		Author:    author,
+		Date:      date,
+		SourceID:  sourceID,
+		Analyzed:  false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
 	validator := validator.New()
 	if err = validator.Struct(text); err != nil {
 		return text, err
@@ -34,7 +46,15 @@ func NewText(content string, author []string, date time.Time, sourceID int) (tex
 }
 
 func NewTextWithoutDate(content string, author []string, sourceID int) (text Text, err error) {
-	text = Text{Content: content, Author: author, SourceID: sourceID, Analyzed: false}
+	text = Text{
+		Content:   content,
+		Author:    author,
+		SourceID:  sourceID,
+		Analyzed:  false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
 	validator := validator.New()
 	if err = validator.Struct(text); err != nil {
 		return text, err
@@ -75,10 +95,13 @@ func GetTexts(content string, author []string, dateStart time.Time, dateEnd time
 
 func (text *Text) SendToProcessQueue() {
 	kafkaText := kafka.Text{
-		ID:       text.ID,
-		Content:  text.Content,
-		Author:   text.Author,
-		SourceID: text.SourceID,
+		ID:        text.ID,
+		Content:   text.Content,
+		Author:    text.Author,
+		SourceID:  text.SourceID,
+		CreatedAt: text.CreatedAt,
+		UpdatedAt: text.UpdatedAt,
+		DeletedAt: text.DeletedAt,
 	}
 
 	if !text.Date.IsZero() {
