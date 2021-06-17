@@ -30,7 +30,7 @@ func TextWithoutDate(content string, author []string, source *models.Source) (er
 	}
 
 	var text models.Text
-	text, err = models.NewTextWithoutDate(content, author, int(source.ID))
+	text, err = models.NewText(content, author, time.Now(), int(source.ID))
 
 	if err != nil {
 		return err

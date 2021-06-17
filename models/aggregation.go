@@ -102,3 +102,21 @@ func GetPerDateAggregation(
 
 	return counts, err
 }
+
+func GetDatelessAggregation(
+	searchText string, searchAuthor []string, people []string, gpe []string, sourceID int,
+) (aggregation Aggregation, err error) {
+
+	query := elastic.NewDatelessAggregateAllQuery(
+		searchText, searchAuthor, people, gpe, sourceID,
+	)
+
+	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
+		log.Println(err)
+		return aggregation, err
+	} else {
+		aggregation = CreateGeneralAggregationFromQueryResult(queryResult)
+	}
+
+	return aggregation, err
+}

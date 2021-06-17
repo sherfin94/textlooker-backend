@@ -21,12 +21,14 @@ func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
 	}
 }
 
-func generateBasicConditions(requiredDateRange dateRange, sourceID int, content string, author []string) []interface{} {
+func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content string, author []string) []interface{} {
 	var parts []interface{}
 	for _, authorName := range author {
 		parts = append(parts, matchPart{Match: authorPart{Author: authorName}})
 	}
-	parts = append(parts, rangePart{Range: datePart{Date: requiredDateRange}})
+	if requiredDateRange != nil {
+		parts = append(parts, rangePart{Range: datePart{Date: *requiredDateRange}})
+	}
 	parts = append(parts, matchPart{Match: sourcePart{SourceID: sourceID}})
 	parts = append(parts, wildcardPart{WildCard: contentPart{Content: content}})
 
@@ -44,14 +46,17 @@ func generateTextQuery(conditions []interface{}) TextQuery {
 	return textQuery
 }
 
-func AddGeneralAggregationPart(query TextQuery) TextQuery {
-	query.AggregateQuery = aggregationsQueryPart{
+func AddGeneralAggregationPart(query TextQuery, includeDate bool) TextQuery {
+	aggregateQuery := aggregationsQueryPart{
 		AuthorAggregation: aggregation{Terms: field{Field: "author"}},
 		PeopleAggregation: aggregation{Terms: field{Field: "people"}},
 		GPEAggregation:    aggregation{Terms: field{Field: "gpe"}},
 		TokenAggregation:  aggregation{Terms: field{Field: "tokens"}},
-		DateAggregation:   aggregation{Terms: field{Field: "date"}},
 	}
+	if includeDate {
+		aggregateQuery.DateAggregation = aggregation{Terms: field{Field: "date"}}
+	}
+	query.AggregateQuery = aggregateQuery
 	return query
 }
 

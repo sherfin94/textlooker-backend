@@ -68,6 +68,7 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	auth.GET("/general_aggregation", controllers.GetGeneralAggregation)
 	auth.GET("/per_date_aggregation", controllers.GetPerDateAggregation)
+	auth.GET("/dateless_aggregation", controllers.GetDatelessGeneralAggregation)
 
 	apiGateway := router.Group("/api")
 	apiGateway.Use(apiGatewayMiddleware)

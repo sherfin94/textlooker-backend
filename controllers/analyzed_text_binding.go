@@ -84,3 +84,26 @@ func bindAggregationParamsToSourceFieldAndDateRange(
 
 	return err
 }
+
+func bindParamsToSource(
+	context *gin.Context,
+	params *DatelessAggregationParams,
+	source *models.Source,
+) (err error) {
+	if err = context.BindQuery(params); err != nil {
+		return err
+	}
+
+	user, _ := context.Get("user")
+	sourceSearchResult := database.Database.Where(
+		"user_id = ? and id = ?",
+		user.(*models.User).ID,
+		params.SourceID).Find(&source)
+
+	if sourceSearchResult.Error != nil || source.ID == 0 {
+		err = errors.New("Source could not be verified")
+		return err
+	}
+
+	return err
+}

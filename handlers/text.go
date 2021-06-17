@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
+	"time"
 )
 
 func Text(content string, author []string, date string, source *models.Source) (err error) {
@@ -21,10 +22,11 @@ func Text(content string, author []string, date string, source *models.Source) (
 		}
 		text, err = models.NewText(content, author, *time, int(source.ID))
 	} else {
+		now := time.Now()
 		if source.DateAvailable {
 			return errors.New("this source has date enabled, so date must be provided along with data")
 		}
-		text, err = models.NewTextWithoutDate(content, author, int(source.ID))
+		text, err = models.NewText(content, author, now, int(source.ID))
 	}
 
 	if err != nil {
