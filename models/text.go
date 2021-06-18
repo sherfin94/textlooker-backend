@@ -86,7 +86,7 @@ func GetTexts(content string, author []string, dateStart time.Time, dateEnd time
 				Author:   hit.Source.Author,
 				SourceID: hit.Source.SourceID,
 				Analyzed: hit.Source.Analyzed,
-				Date:     hit.Source.Date,
+				// Date:     hit.Source.Date,
 			})
 		}
 	}

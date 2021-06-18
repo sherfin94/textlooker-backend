@@ -1,9 +1,5 @@
 package elastic
 
-import (
-	"time"
-)
-
 type QueryResult struct {
 	Took             int              `json:"took"`
 	TimedOut         bool             `json:"timed_out"`
@@ -27,15 +23,15 @@ type hitsPart struct {
 }
 
 type Text struct {
-	ID       string    `json:"-"`
-	Content  string    `json:"content" validate:"required"`
-	Author   []string  `json:"author" validate:"required"`
-	Date     time.Time `json:"date" validate:"required"`
-	SourceID int       `json:"source_id" validate:"required"`
-	Analyzed bool      `json:"analyzed,omitempty"`
-	People   []string  `json:"people,omitempty"`
-	GPE      []string  `json:"gpe,omitempty"`
-	Tokens   []string  `json:"tokens,omitempty"`
+	ID       string   `json:"-"`
+	Content  string   `json:"content" validate:"required"`
+	Author   []string `json:"author" validate:"required"`
+	Date     string   `json:"date" validate:"required"`
+	SourceID int      `json:"source_id" validate:"required"`
+	Analyzed bool     `json:"analyzed,omitempty"`
+	People   []string `json:"people,omitempty"`
+	GPE      []string `json:"gpe,omitempty"`
+	Tokens   []string `json:"tokens,omitempty"`
 }
 
 type shardsPart struct {

@@ -18,8 +18,8 @@ func NewAggregateByOneFieldQuery(content string, author []string, people []strin
 	return query
 }
 
-func NewDatelessAggregateAllQuery(content string, author []string, people []string, gpe []string, sourceID int) TextQuery {
-	query := NewDatelessAnalyzedTextQuery(content, author, people, gpe, sourceID)
+func NewDatelessAggregateAllQuery(content string, author []string, people []string, gpe []string, tokens []string, sourceID int) TextQuery {
+	query := NewDatelessAnalyzedTextQuery(content, author, people, gpe, tokens, sourceID)
 	query.Size = 0
 	query = AddGeneralAggregationPart(query, false)
 	return query

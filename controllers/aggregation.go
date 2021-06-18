@@ -70,6 +70,7 @@ type DatelessAggregationParams struct {
 	SourceID int      `form:"sourceID" validate:"required"`
 	People   []string `form:"people[]"`
 	GPE      []string `form:"gpe[]"`
+	Tokens   []string `form:"tokens[]"`
 }
 
 func GetDatelessGeneralAggregation(context *gin.Context) {
@@ -77,14 +78,13 @@ func GetDatelessGeneralAggregation(context *gin.Context) {
 	var source models.Source
 
 	err := bindParamsToSource(context, &params, &source)
-
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	aggregation, err := models.GetDatelessAggregation(
-		params.Content, params.Author, params.People, params.GPE,
+		params.Content, params.Author, params.People, params.GPE, params.Tokens,
 		int(source.ID),
 	)
 

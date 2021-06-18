@@ -86,6 +86,8 @@ func Query(query TextQuery, index string) (queryResult QueryResult, err error) {
 
 	if queryResult, err = ParseResult(response.Body); err != nil {
 		log.Printf("Error parsing the response body: %s", err)
+		return queryResult, err
 	}
+
 	return queryResult, err
 }

@@ -44,6 +44,10 @@ type gpePart struct {
 	GPE string `json:"gpe,omitempty"`
 }
 
+type tokenPart struct {
+	Token string `json:"tokens,omitempty"`
+}
+
 type dateRange struct {
 	GTE      string `json:"gte"`
 	LTE      string `json:"lte"`

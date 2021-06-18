@@ -24,7 +24,7 @@ func NewAnalyzedTextQuery(content string, author []string, people []string, gpe 
 	return textQuery
 }
 
-func NewDatelessAnalyzedTextQuery(content string, author []string, people []string, gpe []string, sourceID int) TextQuery {
+func NewDatelessAnalyzedTextQuery(content string, author []string, people []string, gpe []string, tokens []string, sourceID int) TextQuery {
 	conditions := generateBasicConditions(
 		nil, sourceID, content, author,
 	)
@@ -35,6 +35,10 @@ func NewDatelessAnalyzedTextQuery(content string, author []string, people []stri
 
 	for _, gpeItem := range gpe {
 		conditions = append(conditions, matchPart{Match: gpePart{GPE: gpeItem}})
+	}
+
+	for _, token := range tokens {
+		conditions = append(conditions, matchPart{Match: tokenPart{Token: token}})
 	}
 
 	textQuery := generateTextQuery(conditions)
