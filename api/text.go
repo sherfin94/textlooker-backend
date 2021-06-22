@@ -2,9 +2,8 @@ package api
 
 import (
 	"net/http"
-	apihandlers "textlooker-backend/api_handlers"
+	"textlooker-backend/handlers"
 	"textlooker-backend/models"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +23,7 @@ type TextParams struct {
 func PostText(context *gin.Context) {
 	var source *models.Source
 	var batchParams BatchTextParams
+	lastOccuredError := ""
 
 	if err := context.ShouldBindJSON(&batchParams); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Request is not formed properly. Please refer to the API documentation."})
@@ -34,35 +34,26 @@ func PostText(context *gin.Context) {
 	source = sourceData.(*models.Source)
 
 	count := 0
-	lastOccuringErrorMessage := ""
+
+	var textBatch handlers.TextBatch
 	for _, textParams := range batchParams.Batch {
-		date, err := time.Parse("2006-01-02T15:04:05-07:00", textParams.Date)
-		if err == nil {
-			if err := apihandlers.TextWithDate(
-				textParams.Content,
-				textParams.Author,
-				date,
-				source,
-			); err == nil {
-				count += 1
-			} else {
-				lastOccuringErrorMessage = err.Error()
-			}
-		} else {
-			if err := apihandlers.TextWithoutDate(
-				textParams.Content,
-				textParams.Author,
-				source,
-			); err == nil {
-				count += 1
-			} else {
-				lastOccuringErrorMessage = err.Error()
-			}
+		text := handlers.Text{
+			Content:      textParams.Content,
+			Author:       textParams.Author,
+			DateAsString: textParams.Date,
 		}
+		textBatch.TextSet = append(textBatch.TextSet, text)
+	}
+
+	textBatch.SourceID = int(source.ID)
+	count, err := handlers.ProcessTextBatch(textBatch, source)
+
+	if err != nil {
+		lastOccuredError = err.Error()
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"savedTextCount":           count,
-		"lastOccuringErrorMessage": lastOccuringErrorMessage,
+		"savedTextCount":   count,
+		"lastOccuredError": lastOccuredError,
 	})
 }
