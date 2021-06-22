@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const ReferenceDate = "Jan 2 15:04:05 -0700 MST 2006"
+const ReferenceDate = "2006-01-02T15:04:05-07:00"
 
 type BatchTextParams struct {
 	Batch    []TextParams `json:"batch"`
@@ -26,6 +26,7 @@ type TextParams struct {
 func PostText(context *gin.Context) {
 	var source models.Source
 	var batchParams BatchTextParams
+	lastOccuredError := ""
 	user, _ := context.Get("user")
 
 	if err := context.ShouldBindJSON(&batchParams); err != nil {
@@ -39,19 +40,21 @@ func PostText(context *gin.Context) {
 		return
 	}
 
-	count := 0
-	lastOccuredError := ""
+	var textBatch handlers.TextBatch
 	for _, textParams := range batchParams.Batch {
-		if err := handlers.Text(
-			textParams.Content,
-			textParams.Author,
-			textParams.Date,
-			&source,
-		); err == nil {
-			count += 1
-		} else {
-			lastOccuredError = err.Error()
+		text := handlers.Text{
+			Content:      textParams.Content,
+			Author:       textParams.Author,
+			DateAsString: textParams.Date,
 		}
+		textBatch.TextSet = append(textBatch.TextSet, text)
+	}
+
+	textBatch.SourceID = batchParams.SourceID
+	count, err := handlers.ProcessTextBatch(textBatch, &source)
+
+	if err != nil {
+		lastOccuredError = err.Error()
 	}
 
 	context.JSON(http.StatusOK, gin.H{

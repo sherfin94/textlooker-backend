@@ -1,39 +1,63 @@
 package handlers
 
 import (
-	"errors"
 	"strconv"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
 	"time"
 )
 
-func Text(content string, author []string, date string, source *models.Source) (err error) {
-	var text models.Text
-	var dateAsInteger int64
-	if len(date) > 0 {
-		if !source.DateAvailable {
-			return errors.New("this source does not have date enabled, please create a source with date enabled")
-		}
-		dateAsInteger, err = strconv.ParseInt(date, 10, 64)
-		time := util.ParseTimestamp(float64(dateAsInteger))
-		if err != nil {
-			return err
-		}
-		text, err = models.NewText(content, author, *time, int(source.ID))
-	} else {
-		now := time.Now()
+type TextBatch struct {
+	TextSet  []Text `json:"batch"`
+	SourceID int    `json:"sourceID" validate:"required"`
+}
+
+type Text struct {
+	Content      string    `json:"content" validate:"required"`
+	Author       []string  `json:"author,omitempty" validate:"required"`
+	DateAsString string    `json:"-"`
+	Date         time.Time `json:"date,omitempty" validate:"required"`
+}
+
+func ProcessTextBatch(batch TextBatch, source *models.Source) (int, error) {
+	var lastOccuredError error
+	for _, text := range batch.TextSet {
 		if source.DateAvailable {
-			return errors.New("this source has date enabled, so date must be provided along with data")
+			dateAsInteger, err := strconv.ParseInt(text.DateAsString, 10, 64)
+			if err == nil {
+				date := util.ParseTimestamp(float64(dateAsInteger))
+				text.Date = *date
+			} else {
+				lastOccuredError = err
+			}
+		} else {
+			text.Date = time.Now()
 		}
-		text, err = models.NewText(content, author, now, int(source.ID))
 	}
 
+	var textSet []models.Text
+	for _, handlerText := range batch.TextSet {
+		text := models.Text{
+			Content:   handlerText.Content,
+			Author:    handlerText.Author,
+			Date:      handlerText.Date,
+			SourceID:  int(source.ID),
+			Analyzed:  false,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+
+		textSet = append(textSet, text)
+	}
+
+	count, err := models.BulkSaveText(textSet)
 	if err != nil {
-		return err
+		return count, err
 	} else {
-		go text.SendToProcessQueue()
+		for _, text := range textSet {
+			text.SendToProcessQueue()
+		}
 	}
 
-	return err
+	return count, lastOccuredError
 }

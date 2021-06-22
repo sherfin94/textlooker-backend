@@ -17,4 +17,18 @@ check if create topic is necessary
 introduce policies to limit maximum size of messages being passed along and processed across the system
 
 block access to login areas for non-logged in user
+
+date range: done
+large file batched upload
+file upload progress
+analysed text count
+more categories
+keep analysis on store while switching tabs
+
+If there are no people, then don't show people on the sidebar
+live
+remove unprintable characters before processing text
+dont show comma on hovering bars
+filteritem hover tooltip
+set min and max date at date select
 ----------------------------------------
