@@ -57,12 +57,12 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 }
 
 func GetAnalyzedTexts(
-	searchText string, searchAuthor []string, people []string, gpe []string,
+	searchText string, filterItems []elastic.FilterItem,
 	startDate time.Time, endDate time.Time, sourceID int,
 ) (analyzedTexts []AnalyzedText, err error) {
 	analyzedTexts = []AnalyzedText{}
 
-	textQuery := elastic.NewAnalyzedTextQuery(searchText, searchAuthor, people, gpe, startDate, endDate, sourceID)
+	textQuery := elastic.NewAnalyzedTextQuery(searchText, filterItems, startDate, endDate, sourceID)
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)
 		return analyzedTexts, err

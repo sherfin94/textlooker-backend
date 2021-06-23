@@ -4,11 +4,11 @@ import (
 	"time"
 )
 
-func NewTextQuery(content string, author []string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
+func NewTextQuery(content string, filterItems []FilterItem, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
 	dateRange := makeDateRange(startDate, endDate)
 	conditions := generateBasicConditions(
 		&dateRange,
-		sourceID, content, author,
+		sourceID, content, filterItems,
 	)
 
 	textQuery := generateTextQuery(conditions)

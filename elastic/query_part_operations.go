@@ -6,10 +6,6 @@ import (
 	"time"
 )
 
-type AggregationField uint8
-
-const People, GPE, Tokens, Authors = 1, 2, 3, 4
-
 func (textQuery *TextQuery) Buffer() (bytesBuffer bytes.Buffer, err error) {
 	return util.StructToBytesBuffer(textQuery)
 }
@@ -21,10 +17,10 @@ func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
 	}
 }
 
-func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content string, author []string) []interface{} {
+func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content string, filterItems []FilterItem) []interface{} {
 	var parts []interface{}
-	for _, authorName := range author {
-		parts = append(parts, matchPart{Match: authorPart{Author: authorName}})
+	for _, filterItem := range filterItems {
+		parts = append(parts, matchPart{Match: map[string]interface{}{filterItem.Label: filterItem.Text}})
 	}
 	if requiredDateRange != nil {
 		parts = append(parts, rangePart{Range: datePart{Date: *requiredDateRange}})
@@ -47,31 +43,31 @@ func generateTextQuery(conditions []interface{}) TextQuery {
 }
 
 func AddGeneralAggregationPart(query TextQuery, includeDate bool) TextQuery {
-	aggregateQuery := aggregationsQueryPart{
-		AuthorAggregation: aggregation{Terms: field{Field: "author"}},
-		PeopleAggregation: aggregation{Terms: field{Field: "people"}},
-		GPEAggregation:    aggregation{Terms: field{Field: "gpe"}},
-		TokenAggregation:  aggregation{Terms: field{Field: "tokens"}},
+	aggregateQuery := map[string]interface{}{}
+
+	for _, field := range AggregatableFields {
+		aggregateQuery[field] = map[string]interface{}{
+			"terms": map[string]interface{}{
+				"field": field,
+			},
+		}
 	}
-	if includeDate {
-		aggregateQuery.DateAggregation = aggregation{Terms: field{Field: "date"}}
+
+	aggregateQuery["date"] = map[string]interface{}{
+		"terms": map[string]interface{}{
+			"field": "date",
+		},
 	}
+
 	query.AggregateQuery = aggregateQuery
 	return query
 }
 
-func AddSingleFieldCompositeAggregationPart(query TextQuery, fieldToAggregate AggregationField) TextQuery {
-	var aggregationPart interface{}
-
-	switch fieldToAggregate {
-	case People:
-		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "people"}}}
-	case Tokens:
-		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "tokens"}}}
-	case GPE:
-		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "gpe"}}}
-	case Authors:
-		aggregationPart = aggregationGenericFieldPart{Field: aggregation{Terms: field{Field: "author"}}}
+func AddSingleFieldCompositeAggregationPart(query TextQuery, fieldToAggregate string) TextQuery {
+	aggregationPart := map[string]interface{}{
+		"terms": map[string]interface{}{
+			"field": fieldToAggregate,
+		},
 	}
 
 	query.AggregateQuery =

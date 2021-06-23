@@ -78,8 +78,8 @@ func BulkSaveText(textSet []Text) (int, error) {
 	return int(countSuccessful), err
 }
 
-func GetTexts(content string, author []string, dateStart time.Time, dateEnd time.Time, sourceID int) (texts []Text, err error) {
-	textQuery := elastic.NewTextQuery(content, author, dateStart, dateEnd, sourceID)
+func GetTexts(content string, filterItems []elastic.FilterItem, dateStart time.Time, dateEnd time.Time, sourceID int) (texts []Text, err error) {
+	textQuery := elastic.NewTextQuery(content, filterItems, dateStart, dateEnd, sourceID)
 	texts = []Text{}
 
 	if err != nil {

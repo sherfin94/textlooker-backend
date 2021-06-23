@@ -26,8 +26,13 @@ func GetGeneralAggregation(context *gin.Context) {
 		return
 	}
 
+	var filterItems []elastic.FilterItem
+	for _, item := range params.Filter {
+		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
+	}
+
 	aggregation, err := models.GetAggregation(
-		params.Content, params.Author, params.People, params.GPE,
+		params.Content, filterItems,
 		startDate, endDate, int(source.ID),
 	)
 
@@ -43,7 +48,7 @@ func GetPerDateAggregation(context *gin.Context) {
 	var params AggregationParams
 	var source models.Source
 	var startDate, endDate time.Time
-	var field elastic.AggregationField
+	var field string
 
 	err := bindAggregationParamsToSourceFieldAndDateRange(context, &params, &source, &startDate, &endDate, &field)
 
@@ -51,8 +56,13 @@ func GetPerDateAggregation(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	var filterItems []elastic.FilterItem
+	for _, item := range params.Filter {
+		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
+	}
+
 	counts, err := models.GetPerDateAggregation(
-		params.Content, params.Author, params.People, params.GPE,
+		params.Content, filterItems,
 		startDate, endDate, int(source.ID), field,
 	)
 
@@ -65,12 +75,10 @@ func GetPerDateAggregation(context *gin.Context) {
 }
 
 type DatelessAggregationParams struct {
-	Content  string   `form:"content,default=*"`
-	Author   []string `form:"author[]"`
-	SourceID int      `form:"sourceID" validate:"required"`
-	People   []string `form:"people[]"`
-	GPE      []string `form:"gpe[]"`
-	Tokens   []string `form:"tokens[]"`
+	Content  string       `form:"content,default=*"`
+	Author   []string     `form:"author[]"`
+	SourceID int          `form:"sourceID" validate:"required"`
+	Filter   []FilterItem `form:"filter" validate:"required"`
 }
 
 func GetDatelessGeneralAggregation(context *gin.Context) {
@@ -83,8 +91,12 @@ func GetDatelessGeneralAggregation(context *gin.Context) {
 		return
 	}
 
+	var filterItems []elastic.FilterItem
+	for _, item := range params.Filter {
+		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
+	}
 	aggregation, err := models.GetDatelessAggregation(
-		params.Content, params.Author, params.People, params.GPE, params.Tokens,
+		params.Content, filterItems,
 		int(source.ID),
 	)
 

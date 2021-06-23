@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"textlooker-backend/database"
+	"textlooker-backend/elastic"
 	"textlooker-backend/handlers"
 	"textlooker-backend/models"
 	"time"
@@ -64,11 +65,11 @@ func PostText(context *gin.Context) {
 }
 
 type TextSearchParams struct {
-	Content   string   `form:"content,default=*"`
-	Author    []string `form:"author[],default="`
-	StartDate string   `form:"startDate" validate:"required"`
-	EndDate   string   `form:"endDate" validate:"required"`
-	SourceID  int      `form:"sourceID" validate:"required"`
+	Content   string       `form:"content,default=*"`
+	Filter    []FilterItem `form:"filter"`
+	StartDate string       `form:"startDate" validate:"required"`
+	EndDate   string       `form:"endDate" validate:"required"`
+	SourceID  int          `form:"sourceID" validate:"required"`
 }
 
 func GetTexts(context *gin.Context) {
@@ -95,9 +96,13 @@ func GetTexts(context *gin.Context) {
 		return
 	}
 
+	var filterItems []elastic.FilterItem
+	for _, item := range textSearchParams.Filter {
+		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
+	}
 	texts, err := models.GetTexts(
 		textSearchParams.Content,
-		textSearchParams.Author,
+		filterItems,
 		startDate, endDate,
 		int(source.ID),
 	)

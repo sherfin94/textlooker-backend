@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"testing"
+	"textlooker-backend/elastic"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
 	"time"
@@ -72,8 +73,15 @@ func (suite *TextTestSuite) TestPostText() {
 func (suite *TextTestSuite) TestGetTextsFunc() {
 	randomText := util.RandStringRunes(20)
 	randomAuthor := util.RandStringRunes(10)
-	models.NewText(randomText, []string{randomAuthor}, time.Now(), int(suite.Source.ID))
-	texts, _ := models.GetTexts(randomText, []string{randomAuthor}, time.Now().Add(-3*time.Hour), time.Now(), int(suite.Source.ID))
+	models.BulkSaveText([]models.Text{
+		{
+			Content:  randomText,
+			Author:   []string{randomAuthor},
+			Date:     time.Now(),
+			SourceID: int(suite.Source.ID),
+		},
+	})
+	texts, _ := models.GetTexts(randomText, []elastic.FilterItem{}, time.Now().Add(-3*time.Hour), time.Now(), int(suite.Source.ID))
 
 	assert.Contains(suite.T(), texts[0].Content, randomText)
 	assert.Equal(suite.T(), texts[0].Author, []string{randomAuthor})
@@ -82,7 +90,14 @@ func (suite *TextTestSuite) TestGetTextsFunc() {
 func (suite *TextTestSuite) TestGetTexts() {
 	randomText := util.RandStringRunes(20)
 	randomAuthor := util.RandStringRunes(10)
-	models.NewText(randomText, []string{randomAuthor}, time.Now(), int(suite.Source.ID))
+	models.BulkSaveText([]models.Text{
+		{
+			Content:  randomText,
+			Author:   []string{randomAuthor},
+			Date:     time.Now(),
+			SourceID: int(suite.Source.ID),
+		},
+	})
 
 	data := map[string]string{
 		"content":   randomText,

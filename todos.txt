@@ -20,9 +20,10 @@ block access to login areas for non-logged in user
 
 date range: done
 large file batched upload: done
-file upload progress
-analysed text count
+file upload progress: done
 more categories
+display text
+analysed text count
 keep analysis on store while switching tabs
 
 If there are no people, then don't show people on the sidebar

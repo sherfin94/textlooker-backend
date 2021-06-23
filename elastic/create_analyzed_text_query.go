@@ -4,42 +4,22 @@ import (
 	"time"
 )
 
-func NewAnalyzedTextQuery(content string, author []string, people []string, gpe []string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
+func NewAnalyzedTextQuery(content string, filterItems []FilterItem, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
 	dateRange := makeDateRange(startDate, endDate)
 	conditions := generateBasicConditions(
 		&dateRange,
-		sourceID, content, author,
+		sourceID, content, filterItems,
 	)
-
-	for _, person := range people {
-		conditions = append(conditions, matchPart{Match: peoplePart{Person: person}})
-	}
-
-	for _, gpeItem := range gpe {
-		conditions = append(conditions, matchPart{Match: gpePart{GPE: gpeItem}})
-	}
 
 	textQuery := generateTextQuery(conditions)
 
 	return textQuery
 }
 
-func NewDatelessAnalyzedTextQuery(content string, author []string, people []string, gpe []string, tokens []string, sourceID int) TextQuery {
+func NewDatelessAnalyzedTextQuery(content string, filterItems []FilterItem, sourceID int) TextQuery {
 	conditions := generateBasicConditions(
-		nil, sourceID, content, author,
+		nil, sourceID, content, filterItems,
 	)
-
-	for _, person := range people {
-		conditions = append(conditions, matchPart{Match: peoplePart{Person: person}})
-	}
-
-	for _, gpeItem := range gpe {
-		conditions = append(conditions, matchPart{Match: gpePart{GPE: gpeItem}})
-	}
-
-	for _, token := range tokens {
-		conditions = append(conditions, matchPart{Match: tokenPart{Token: token}})
-	}
 
 	textQuery := generateTextQuery(conditions)
 

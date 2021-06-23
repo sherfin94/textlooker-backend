@@ -1,11 +1,11 @@
 package elastic
 
 type QueryResult struct {
-	Took             int              `json:"took"`
-	TimedOut         bool             `json:"timed_out"`
-	Shards           shardsPart       `json:"_shards"`
-	Hits             hitsPart         `json:"hits"`
-	AggregationsPart aggregationsPart `json:"aggregations,omitempty"`
+	Took             int         `json:"took"`
+	TimedOut         bool        `json:"timed_out"`
+	Shards           shardsPart  `json:"_shards"`
+	Hits             hitsPart    `json:"hits"`
+	AggregationsPart interface{} `json:"aggregations,omitempty"`
 }
 
 type innerHitsPart struct {
@@ -26,7 +26,7 @@ type Text struct {
 	ID       string   `json:"-"`
 	Content  string   `json:"content" validate:"required"`
 	Author   []string `json:"author" validate:"required"`
-	Date     string   `json:"date" validate:"required"`
+	Date     string   `json:"date,omitempty" validate:"required"`
 	SourceID int      `json:"source_id" validate:"required"`
 	Analyzed bool     `json:"analyzed,omitempty"`
 	People   []string `json:"people,omitempty"`
@@ -46,16 +46,7 @@ type totalPart struct {
 	Relation string `json:"todrelation"`
 }
 
-type aggregationsPart struct {
-	AuthorAggregation  aggregationResultPart        `json:"authors,omitempty"`
-	PeopleAggregation  aggregationResultPart        `json:"people,omitempty"`
-	GPEAggregation     aggregationResultPart        `json:"gpe,omitempty"`
-	TokenAggregation   aggregationResultPart        `json:"tokens,omitempty"`
-	DateAggregation    aggregationResultPart        `json:"date,omitempty"`
-	PerDateAggregation perDateAggregationResultPart `json:"per_date,omitempty"`
-}
-
-type aggregationResultPart struct {
+type AggregationResultPart struct {
 	Buckets []count `json:"buckets,omitempty"`
 }
 

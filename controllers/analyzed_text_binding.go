@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"textlooker-backend/database"
-	"textlooker-backend/elastic"
 	"textlooker-backend/models"
 	"time"
 
@@ -44,7 +43,7 @@ func bindAggregationParamsToSourceFieldAndDateRange(
 	context *gin.Context,
 	params *AggregationParams,
 	source *models.Source, startDate *time.Time, endDate *time.Time,
-	field *elastic.AggregationField,
+	field *string,
 ) (err error) {
 	if err = context.BindQuery(params); err != nil {
 		return err
@@ -69,18 +68,7 @@ func bindAggregationParamsToSourceFieldAndDateRange(
 		return err
 	}
 
-	switch params.Field {
-	case "tokens":
-		*field = elastic.Tokens
-	case "people":
-		*field = elastic.People
-	case "gpe":
-		*field = elastic.GPE
-	case "authors":
-		*field = elastic.Authors
-	default:
-		err = errors.New("unrecognized field")
-	}
+	*field = params.Field
 
 	return err
 }
