@@ -21,10 +21,19 @@ block access to login areas for non-logged in user
 date range: done
 large file batched upload: done
 file upload progress: done
-more categories
+more categories: done
+
+fix issue with filter aggregation : done
+fix filter scrollbar
+fix date filter
+add token wise aggregation
+check security of user trying to aggregate other stuff by passing custom stuff
+fix unresponsive crapping when clicking on links
+
 display text
 analysed text count
 keep analysis on store while switching tabs
+different visualizations
 
 If there are no people, then don't show people on the sidebar
 live

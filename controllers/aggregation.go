@@ -78,7 +78,7 @@ type DatelessAggregationParams struct {
 	Content  string       `form:"content,default=*"`
 	Author   []string     `form:"author[]"`
 	SourceID int          `form:"sourceID" validate:"required"`
-	Filter   []FilterItem `form:"filter" validate:"required"`
+	Filter   []FilterItem `form:"filter[]" validate:"required"`
 }
 
 func GetDatelessGeneralAggregation(context *gin.Context) {
