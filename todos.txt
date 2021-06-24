@@ -24,8 +24,9 @@ file upload progress: done
 more categories: done
 
 fix issue with filter aggregation : done
-fix filter scrollbar
-fix date filter
+If there are no people, then don't show people on the sidebar: done
+fix filter scrollbar:done
+fix date filter : done
 add token wise aggregation
 check security of user trying to aggregate other stuff by passing custom stuff
 fix unresponsive crapping when clicking on links
@@ -35,7 +36,6 @@ analysed text count
 keep analysis on store while switching tabs
 different visualizations
 
-If there are no people, then don't show people on the sidebar
 live
 remove unprintable characters before processing text
 dont show comma on hovering bars
