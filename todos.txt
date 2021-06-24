@@ -27,8 +27,8 @@ fix issue with filter aggregation : done
 If there are no people, then don't show people on the sidebar: done
 fix filter scrollbar:done
 fix date filter : done
-add token wise aggregation
-check security of user trying to aggregate other stuff by passing custom stuff
+add token wise aggregation : done
+check security of user trying to aggregate other stuff by passing custom stuff : done
 fix unresponsive crapping when clicking on links
 
 display text

@@ -20,7 +20,17 @@ func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
 func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content string, filterItems []FilterItem) []interface{} {
 	var parts []interface{}
 	for _, filterItem := range filterItems {
-		parts = append(parts, matchPart{Match: map[string]interface{}{filterItem.Label: filterItem.Text}})
+
+		found := false
+		for _, field := range AggregatableFields {
+			if field == filterItem.Label {
+				found = true
+				break
+			}
+		}
+		if found {
+			parts = append(parts, matchPart{Match: map[string]interface{}{filterItem.Label: filterItem.Text}})
+		}
 	}
 	if requiredDateRange != nil {
 		parts = append(parts, rangePart{Range: datePart{Date: *requiredDateRange}})
