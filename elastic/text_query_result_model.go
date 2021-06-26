@@ -1,5 +1,26 @@
 package elastic
 
+import (
+	"time"
+)
+
+type Time struct {
+	time.Time
+}
+
+func (t *Time) UnmarshalJSON(b []byte) error {
+	layout := "2006-01-02T15:04:05-0700"
+	s := string(b)
+	s = s[1 : len(s)-1]
+	result, err := time.Parse(layout, s)
+	*t = Time{result}
+	return err
+}
+
+type Config struct {
+	T Time
+}
+
 type QueryResult struct {
 	Took             int         `json:"took"`
 	TimedOut         bool        `json:"timed_out"`
@@ -26,12 +47,12 @@ type Text struct {
 	ID       string   `json:"-"`
 	Content  string   `json:"content" validate:"required"`
 	Author   []string `json:"author" validate:"required"`
-	Date     string   `json:"date,omitempty" validate:"required"`
+	Date     Time     `json:"date,omitempty" validate:"required"`
 	SourceID int      `json:"source_id" validate:"required"`
 	Analyzed bool     `json:"analyzed,omitempty"`
-	People   []string `json:"people,omitempty"`
-	GPE      []string `json:"gpe,omitempty"`
-	Tokens   []string `json:"tokens,omitempty"`
+	// People   []string `json:"people,omitempty"`
+	// GPE      []string `json:"gpe,omitempty"`
+	// Tokens   []string `json:"tokens,omitempty"`
 }
 
 type shardsPart struct {

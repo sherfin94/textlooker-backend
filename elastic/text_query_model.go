@@ -117,6 +117,7 @@ type boolPart struct {
 type TextQuery struct {
 	Query          boolPart    `json:"query"`
 	Size           int         `json:"size"`
+	From           int         `json:"from"`
 	AggregateQuery interface{} `json:"aggs,omitempty"`
 }
 

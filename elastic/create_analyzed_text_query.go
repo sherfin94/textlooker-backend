@@ -4,10 +4,13 @@ import (
 	"time"
 )
 
-func NewAnalyzedTextQuery(content string, filterItems []FilterItem, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
-	dateRange := makeDateRange(startDate, endDate)
+func NewAnalyzedTextQuery(content string, filterItems []FilterItem, startDate time.Time, endDate time.Time, sourceID int, dateRangeProvided bool) TextQuery {
+	var dateRange *dateRange
+	if dateRangeProvided {
+		*dateRange = makeDateRange(startDate, endDate)
+	}
 	conditions := generateBasicConditions(
-		&dateRange,
+		dateRange,
 		sourceID, content, filterItems,
 	)
 

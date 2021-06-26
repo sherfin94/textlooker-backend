@@ -14,9 +14,6 @@ type AnalyzedText struct {
 	Author   []string  `json:"author" validate:"required"`
 	Date     time.Time `json:"date" validate:"required"`
 	SourceID int       `json:"source_id" validate:"required"`
-	People   []string  `json:"people" validate:"required"`
-	GPE      []string  `json:"gpe" validate:"required"`
-	Tokens   []string  `json:"tokens" validate:"required"`
 }
 
 func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
@@ -32,19 +29,11 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 		}
 	}
 
-	tokens, err := nlp.Tokenize(text.Content)
-	if err != nil {
-		return analyzedText, err
-	}
-
 	analyzedText = AnalyzedText{
 		Content:  text.Content,
 		Author:   text.Author,
 		Date:     text.Date,
 		SourceID: text.SourceID,
-		People:   people,
-		GPE:      gpe,
-		Tokens:   tokens,
 	}
 
 	_, err = elastic.Save(deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT"), analyzedText, text.ID)
@@ -57,29 +46,43 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 }
 
 func GetAnalyzedTexts(
-	searchText string, filterItems []elastic.FilterItem,
+	searchText string, from int, filterItems []elastic.FilterItem,
 	startDate time.Time, endDate time.Time, sourceID int,
-) (analyzedTexts []AnalyzedText, err error) {
+	dateRangeProvided bool,
+) (analyzedTexts []AnalyzedText, total int, err error) {
 	analyzedTexts = []AnalyzedText{}
 
-	textQuery := elastic.NewAnalyzedTextQuery(searchText, filterItems, startDate, endDate, sourceID)
+	textQuery := elastic.NewAnalyzedTextQuery(searchText, filterItems, startDate, endDate, sourceID, dateRangeProvided)
+	textQuery.Size = 20
+	textQuery.From = from
+
+	total = 0
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)
-		return analyzedTexts, err
+		return analyzedTexts, total, err
 	} else {
 		for _, hit := range queryResult.Hits.Hits {
+
+			// date, err := time.Parse("2006-01-02T15:04:05-0700", hit.Source.Date)
+			// if err != nil {
+			// 	return analyzedTexts, err
+			// }
+
+			// log.Println("shashi")
+			// log.Println(date.String())
 			analyzedTexts = append(analyzedTexts, AnalyzedText{
 				ID:       hit.ID,
 				Content:  hit.Source.Content,
 				Author:   hit.Source.Author,
 				SourceID: hit.Source.SourceID,
-				People:   hit.Source.People,
-				GPE:      hit.Source.GPE,
-				Tokens:   hit.Source.Tokens,
-				// Date:     hit.Source.Date,
+				Date:     hit.Source.Date.Time,
+				// People:   hit.Source.People,
+				// GPE:      hit.Source.GPE,
+				// Tokens:   hit.Source.Tokens,
 			})
 		}
+		total = queryResult.Hits.Total.Value
 	}
 
-	return analyzedTexts, err
+	return analyzedTexts, total, err
 }

@@ -30,11 +30,16 @@ func bindParamsToSourceAndDateRange(
 		return
 	}
 
-	(*startDate), err = time.Parse(ReferenceDate, params.StartDate)
-	if err != nil {
-		return err
+	if params.StartDate != "" {
+		(*startDate), err = time.Parse(ReferenceDate, params.StartDate)
+		if err != nil {
+			return err
+		}
+		(*endDate), err = time.Parse(ReferenceDate, params.EndDate)
+		if err != nil {
+			return err
+		}
 	}
-	(*endDate), err = time.Parse(ReferenceDate, params.EndDate)
 
 	return err
 }

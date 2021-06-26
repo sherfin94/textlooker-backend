@@ -116,8 +116,10 @@ func (text *Text) SendToProcessQueue() {
 	}
 
 	if !text.Date.IsZero() {
-		kafkaText.Date = text.Date.Format("2006-01-02T15:04:05-0700")
+		kafkaText.Date = time.Now().Format("2006-01-02T15:04:05-0700")
 	}
+
+	log.Println(kafkaText.Date)
 
 	*kafka.TextProcessChannel <- kafkaText
 }
