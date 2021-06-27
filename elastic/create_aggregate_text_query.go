@@ -11,8 +11,8 @@ func NewAggregateAllQuery(content string, filterItems []FilterItem, startDate ti
 	return query
 }
 
-func NewAggregateByOneFieldQuery(content string, field string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
-	query := NewAnalyzedTextQuery(content, []FilterItem{}, startDate, endDate, sourceID, true)
+func NewAggregateByOneFieldQuery(content string, filterItems []FilterItem, field string, startDate time.Time, endDate time.Time, sourceID int) TextQuery {
+	query := NewAnalyzedTextQuery(content, filterItems, startDate, endDate, sourceID, true)
 	query.Size = 1000
 	query = AddSingleFieldCompositeAggregationPart(query, field)
 	return query

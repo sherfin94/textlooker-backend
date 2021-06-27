@@ -107,7 +107,7 @@ func GetPerDateAggregation(
 ) (counts []CountItem, err error) {
 
 	query := elastic.NewAggregateByOneFieldQuery(
-		searchText, field, startDate,
+		searchText, filterItems, field, startDate,
 		endDate, sourceID,
 	)
 
