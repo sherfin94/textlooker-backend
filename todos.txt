@@ -31,16 +31,20 @@ add token wise aggregation : done
 check security of user trying to aggregate other stuff by passing custom stuff : done
 fix unresponsive crapping when clicking on links: done
 
-display text
+display text : done
+different visualizations
+keep analysis on store while switching tabs
 analysed text count
   * batched processing and saving
   * batched update of text after analysis
-different visualizations
-keep analysis on store while switching tabs
 
 live
 remove unprintable characters before processing text
 dont show comma on hovering bars
 filteritem hover tooltip
 set min and max date at date select
+different icons for tokens
+date_tokens
+
+
 ----------------------------------------

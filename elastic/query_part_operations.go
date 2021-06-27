@@ -6,14 +6,16 @@ import (
 	"time"
 )
 
+const DateFormat = "2006-01-02T15:04:05Z-0700"
+
 func (textQuery *TextQuery) Buffer() (bytesBuffer bytes.Buffer, err error) {
 	return util.StructToBytesBuffer(textQuery)
 }
 
 func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
 	return dateRange{
-		GTE: util.MakeTimestamp(startDate),
-		LTE: util.MakeTimestamp(endDate),
+		GTE: startDate.Format(DateFormat),
+		LTE: endDate.Format(DateFormat),
 	}
 }
 
