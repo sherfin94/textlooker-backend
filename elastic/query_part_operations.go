@@ -63,6 +63,7 @@ func AddGeneralAggregationPart(query TextQuery, includeDate bool) TextQuery {
 		aggregateQuery[field] = map[string]interface{}{
 			"terms": map[string]interface{}{
 				"field": field,
+				"size":  50,
 			},
 		}
 	}
@@ -70,6 +71,7 @@ func AddGeneralAggregationPart(query TextQuery, includeDate bool) TextQuery {
 	aggregateQuery["date"] = map[string]interface{}{
 		"terms": map[string]interface{}{
 			"field": "date",
+			"size":  50,
 		},
 	}
 
@@ -79,8 +81,10 @@ func AddGeneralAggregationPart(query TextQuery, includeDate bool) TextQuery {
 
 func AddSingleFieldCompositeAggregationPart(query TextQuery, fieldToAggregate string) TextQuery {
 	aggregationPart := map[string]interface{}{
-		"terms": map[string]interface{}{
-			"field": fieldToAggregate,
+		fieldToAggregate: map[string]interface{}{
+			"terms": map[string]interface{}{
+				"field": fieldToAggregate,
+			},
 		},
 	}
 

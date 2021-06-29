@@ -5,6 +5,7 @@ import (
 	"log"
 	"textlooker-backend/deployment"
 	"textlooker-backend/elastic"
+	"textlooker-backend/util"
 	"time"
 )
 
@@ -72,11 +73,17 @@ func CreateGeneralAggregationFromQueryResult(queryResult elastic.QueryResult) (a
 	return aggregation
 }
 
-func CreatePerDateAggregationFromQueryResult(queryResult elastic.QueryResult) (counts []CountItem) {
-	// counts = []CountItem{}
-	// for _, bucket := range queryResult.AggregationsPart.PerDateAggregation.Buckets {
-	// 	counts = append(counts, CountItem{Value: bucket.Key.FieldValue, Count: bucket.Count, Date: util.ParseTimestamp(bucket.Key.Date)})
-	// }
+func CreatePerDateAggregationFromQueryResult(queryResult elastic.QueryResult, field string) (counts []CountItem) {
+	counts = []CountItem{}
+	// log.Println(queryResult.AggregationsPart.(map[string]interface{})["per_date"].(map[string]interface{})["buckets"].([]map[string]interface{}))
+	for _, bucket := range queryResult.AggregationsPart.(map[string]interface{})["per_date"].(map[string]interface{})["buckets"].([]interface{}) {
+		key := bucket.(map[string]interface{})["key"].(map[string]interface{})
+		counts = append(counts, CountItem{
+			Date:  util.ParseTimestamp(key["date"].(float64)),
+			Value: key[field].(string),
+			Count: int(bucket.(map[string]interface{})["doc_count"].(float64)),
+		})
+	}
 
 	return counts
 }
@@ -117,7 +124,9 @@ func GetPerDateAggregation(
 		log.Println(err)
 		return counts, err
 	} else {
-		counts = CreatePerDateAggregationFromQueryResult(queryResult)
+		log.Printf("%v", queryResult)
+		counts = CreatePerDateAggregationFromQueryResult(queryResult, field)
+		log.Println(counts)
 	}
 
 	return counts, err
@@ -130,6 +139,8 @@ func GetDatelessAggregation(
 	query := elastic.NewDatelessAggregateAllQuery(
 		searchText, filterItems, sourceID,
 	)
+
+	log.Println(query.RequestString())
 
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)
