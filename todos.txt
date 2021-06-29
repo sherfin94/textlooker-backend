@@ -34,8 +34,8 @@ fix unresponsive crapping when clicking on links: done
 display text : done
 keep analysis on store while switching tabs : done
 analysed text count
-  * batched processing and saving
-  * batched update of text after analysis
+  * batched processing and saving: done
+  * batched update of text after analysis: done
 tabular display
 live
 save

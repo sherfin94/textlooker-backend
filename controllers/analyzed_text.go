@@ -39,7 +39,7 @@ func GetAnalyzedTexts(context *gin.Context) {
 	for _, item := range analyzedTextSearchParams.Filter {
 		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
 	}
-	texts, total, err := models.GetAnalyzedTexts(
+	texts, total, totalCountQualification, err := models.GetAnalyzedTexts(
 		analyzedTextSearchParams.Content,
 		analyzedTextSearchParams.From,
 		filterItems,
@@ -52,6 +52,6 @@ func GetAnalyzedTexts(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} else {
-		context.JSON(http.StatusOK, gin.H{"texts": texts, "total": total})
+		context.JSON(http.StatusOK, gin.H{"texts": texts, "total": total, "totalCountQualification": totalCountQualification})
 	}
 }

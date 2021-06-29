@@ -64,7 +64,7 @@ type shardsPart struct {
 
 type totalPart struct {
 	Value    int    `json:"value"`
-	Relation string `json:"todrelation"`
+	Relation string `json:"relation"`
 }
 
 type AggregationResultPart struct {

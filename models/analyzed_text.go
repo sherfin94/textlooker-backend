@@ -49,7 +49,7 @@ func GetAnalyzedTexts(
 	searchText string, from int, filterItems []elastic.FilterItem,
 	startDate time.Time, endDate time.Time, sourceID int,
 	dateRangeProvided bool,
-) (analyzedTexts []AnalyzedText, total int, err error) {
+) (analyzedTexts []AnalyzedText, total int, totalCountQualification string, err error) {
 	analyzedTexts = []AnalyzedText{}
 
 	textQuery := elastic.NewAnalyzedTextQuery(searchText, filterItems, startDate, endDate, sourceID, dateRangeProvided)
@@ -59,9 +59,10 @@ func GetAnalyzedTexts(
 	log.Println(textQuery.RequestString())
 
 	total = 0
+	totalCountQualification = "not available"
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)
-		return analyzedTexts, total, err
+		return analyzedTexts, total, totalCountQualification, err
 	} else {
 		for _, hit := range queryResult.Hits.Hits {
 
@@ -84,7 +85,8 @@ func GetAnalyzedTexts(
 			})
 		}
 		total = queryResult.Hits.Total.Value
+		totalCountQualification = queryResult.Hits.Total.Relation
 	}
 
-	return analyzedTexts, total, err
+	return analyzedTexts, total, totalCountQualification, err
 }
