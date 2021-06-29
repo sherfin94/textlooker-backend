@@ -32,19 +32,24 @@ check security of user trying to aggregate other stuff by passing custom stuff :
 fix unresponsive crapping when clicking on links: done
 
 display text : done
-different visualizations
-keep analysis on store while switching tabs
+keep analysis on store while switching tabs : done
 analysed text count
   * batched processing and saving
   * batched update of text after analysis
-
+tabular display
 live
+save
+oiling
+dashboard
+flow display
+
 remove unprintable characters before processing text
 dont show comma on hovering bars
 filteritem hover tooltip
 set min and max date at date select
 different icons for tokens
 date_tokens
-
+is date filter working properly?
+are parsed dates being saved in the server properly?
 
 ----------------------------------------

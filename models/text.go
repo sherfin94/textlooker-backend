@@ -104,22 +104,25 @@ func GetTexts(content string, filterItems []elastic.FilterItem, dateStart time.T
 	return texts, err
 }
 
-func (text *Text) SendToProcessQueue() {
-	kafkaText := kafka.Text{
-		ID:        text.ID,
-		Content:   text.Content,
-		Author:    text.Author,
-		SourceID:  text.SourceID,
-		CreatedAt: text.CreatedAt,
-		UpdatedAt: text.UpdatedAt,
-		DeletedAt: text.DeletedAt,
+func SendToProcessQueue(textSet []Text) {
+	kafkaTextSet := kafka.TextSet{Set: []kafka.Text{}}
+
+	for _, text := range textSet {
+		kafkaText := kafka.Text{
+			ID:        text.ID,
+			Content:   text.Content,
+			Author:    text.Author,
+			SourceID:  text.SourceID,
+			CreatedAt: text.CreatedAt,
+			UpdatedAt: text.UpdatedAt,
+			DeletedAt: text.DeletedAt,
+		}
+		if !text.Date.IsZero() {
+			kafkaText.Date = time.Now().Format("2006-01-02T15:04:05-0700")
+		}
+
+		kafkaTextSet.Set = append(kafkaTextSet.Set, kafkaText)
 	}
 
-	if !text.Date.IsZero() {
-		kafkaText.Date = time.Now().Format("2006-01-02T15:04:05-0700")
-	}
-
-	log.Println(kafkaText.Date)
-
-	*kafka.TextProcessChannel <- kafkaText
+	*kafka.TextProcessChannel <- kafkaTextSet
 }

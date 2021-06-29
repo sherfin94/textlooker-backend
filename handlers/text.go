@@ -50,9 +50,7 @@ func ProcessTextBatch(batch TextBatch, source *models.Source) (int, error) {
 	if err != nil {
 		return count, err
 	} else {
-		for _, text := range textSet {
-			text.SendToProcessQueue()
-		}
+		models.SendToProcessQueue(textSet)
 	}
 
 	return count, lastOccuredError

@@ -56,6 +56,8 @@ func GetAnalyzedTexts(
 	textQuery.Size = 20
 	textQuery.From = from
 
+	log.Println(textQuery.RequestString())
+
 	total = 0
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)

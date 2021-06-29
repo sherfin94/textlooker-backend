@@ -87,15 +87,15 @@ type sourcePart struct {
 }
 
 type contentPart struct {
-	Content string `json:"content"`
+	Content interface{} `json:"content"`
+}
+
+type matchQueryPart struct {
+	Query string `json:"query"`
 }
 
 type authorPart struct {
 	Author string `json:"author"`
-}
-
-type wildcardPart struct {
-	WildCard interface{} `json:"wildcard"`
 }
 
 type matchPart struct {

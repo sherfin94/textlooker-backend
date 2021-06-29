@@ -90,7 +90,7 @@ func main() {
 		elastic.Initiate()
 		database.ConnectDatabase("gorm", database.Silent)
 
-		channel := make(chan kafka.Text)
+		channel := make(chan kafka.TextSet)
 		go kafka.InitializeProducer(&channel)
 
 		r := SetupRouter(deployment.Development)

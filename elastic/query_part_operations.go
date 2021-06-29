@@ -38,7 +38,9 @@ func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content
 		parts = append(parts, rangePart{Range: datePart{Date: *requiredDateRange}})
 	}
 	parts = append(parts, matchPart{Match: sourcePart{SourceID: sourceID}})
-	parts = append(parts, wildcardPart{WildCard: contentPart{Content: content}})
+	if content != "" {
+		parts = append(parts, matchPart{Match: contentPart{Content: matchQueryPart{Query: content}}})
+	}
 
 	return parts
 }

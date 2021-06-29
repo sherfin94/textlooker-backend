@@ -20,9 +20,13 @@ type Text struct {
 	DeletedAt time.Time `json:"deleted_at"`
 }
 
-var TextProcessChannel *chan Text
+type TextSet struct {
+	Set []Text `json:"text_set"`
+}
 
-func InitializeProducer(channel *chan Text) {
+var TextProcessChannel *chan TextSet
+
+func InitializeProducer(channel *chan TextSet) {
 	TextProcessChannel = channel
 
 	if deployment.CurrentRunMode == deployment.Test {

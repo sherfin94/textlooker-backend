@@ -83,7 +83,7 @@ func TestMain(m *testing.M) {
 	elastic.Initiate()
 	CleanupDatabase()
 
-	channel := make(chan kafka.Text)
+	channel := make(chan kafka.TextSet)
 	go kafka.InitializeProducer(&channel)
 
 	router = SetupRouter(deployment.Test)
