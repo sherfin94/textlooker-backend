@@ -37,12 +37,12 @@ analysed text count : done
   * batched processing and saving: done
   * batched update of text after analysis: done
 visualization selection: done
-tabular display
-live
+tabular display: done
+live => reload button : done
 save
 oiling
 dashboard
-flow display
+flow display: paused and postponed.
 
 remove unprintable characters before processing text
 dont show comma on hovering bars
