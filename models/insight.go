@@ -1,7 +1,9 @@
 package models
 
 import (
+	"encoding/json"
 	"textlooker-backend/database"
+	"textlooker-backend/elastic"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -47,4 +49,54 @@ func NewInsight(title string, filter string, lookForHandle string, visualizeText
 
 	result := database.Database.Create(insight)
 	return insight, result.Error
+}
+
+type filterItem struct {
+	Label string `json:"label"`
+	Text  string `json:"text"`
+}
+
+type filterObject struct {
+	FilterItems []filterItem `json:"filter"`
+}
+
+type visualizeTextSet struct {
+	Texts []string `json:"visualizeTexts"`
+}
+
+func (insight *Insight) Aggregation() (aggregation map[string]interface{}, err error) {
+	var filter filterObject
+	var visualizeTexts visualizeTextSet
+
+	err = json.Unmarshal([]byte(insight.Filter), &filter)
+	if err != nil {
+		return aggregation, err
+	}
+
+	err = json.Unmarshal([]byte(insight.VisualizeTexts), &visualizeTexts)
+	if err != nil {
+		return aggregation, err
+	}
+
+	filterItems := []elastic.FilterItem{}
+	for _, item := range filter.FilterItems {
+		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
+	}
+
+	if insight.DateRangeAvailable {
+		aggregation, err = GetAggregation(
+			"*", filterItems,
+			insight.StartDate, insight.EndDate,
+			insight.SourceID,
+		)
+	} else {
+		aggregation, err = GetDatelessAggregation(
+			"*", filterItems,
+			insight.SourceID,
+		)
+	}
+
+	aggregation["visualizeTexts"] = visualizeTexts.Texts
+
+	return aggregation, err
 }
