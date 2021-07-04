@@ -12,5 +12,7 @@ func ApplyMigrations(databaseName string, logMode database.LogMode) error {
 		&UserRegistration{},
 		&Source{},
 		&Insight{},
+		&Dashboard{},
+		&DashboardInsight{},
 	)
 }

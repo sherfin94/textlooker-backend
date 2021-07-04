@@ -74,6 +74,12 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 	auth.GET("/insights", controllers.GetInsights)
 	auth.DELETE("/insights", controllers.DeleteInsight)
 
+	auth.POST("/dashboards", controllers.PostDashboard)
+	auth.GET("/dashboards", controllers.GetDashboards)
+	auth.DELETE("/dashboards", controllers.DeleteDashboard)
+
+	auth.POST("/dashboard_insights", controllers.AddInsightToDashboard)
+
 	apiGateway := router.Group("/api")
 	apiGateway.Use(apiGatewayMiddleware)
 

@@ -92,6 +92,10 @@ func TestMain(m *testing.M) {
 
 func CleanupDatabase() {
 	database.Database.Unscoped().Session(
+		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.DashboardInsight{})
+	database.Database.Unscoped().Session(
+		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Dashboard{})
+	database.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Insight{})
 	database.Database.Unscoped().Session(
 		&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Source{})

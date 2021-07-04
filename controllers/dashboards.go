@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const dashboardDateFormat = "2006-01-02T15:04:05-07:00"
+
 type PostDashboardParams struct {
 	Title    string `json:"title" binding:"required"`
 	SourceID int    `json:"sourceID" binding:"required"`
@@ -67,7 +69,7 @@ func GetDashboards(context *gin.Context) {
 
 	for _, dashboard := range dashboards {
 		result = append(result, map[string]interface{}{
-			"last_updated": dashboard.UpdatedAt.Format(insightDateFormat),
+			"last_updated": dashboard.UpdatedAt.Format(dashboardDateFormat),
 			"title":        dashboard.Title,
 			"id":           dashboard.ID,
 			"token":        dashboard.Token,
@@ -126,8 +128,14 @@ func AddInsightToDashboard(context *gin.Context) {
 	var insight models.Insight
 	var dashboard models.Dashboard
 
+	if err := context.ShouldBindJSON(&params); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	user, _ := context.Get("user")
 	database.Database.Where("user_id = ? and id = ?", user.(*models.User).ID, params.SourceID).Find(&source)
+
 	if source.ID == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Source could not be validated"})
 		return

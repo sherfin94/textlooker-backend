@@ -97,6 +97,7 @@ func (insight *Insight) Aggregation() (aggregation map[string]interface{}, err e
 	}
 
 	aggregation["visualizeTexts"] = visualizeTexts.Texts
+	aggregation["visualizationType"] = insight.VisualizationType
 
 	return aggregation, err
 }
