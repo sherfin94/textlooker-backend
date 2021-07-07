@@ -163,3 +163,48 @@ func AddInsightToDashboard(context *gin.Context) {
 		"status": "Insight added to dashboard",
 	})
 }
+
+type GetDashboardViaTokenParams struct {
+	DashboardID int    `form:"dashboardID" binding:"required"`
+	Token       string `form:"token" binding:"required"`
+}
+
+func GetDashboardViaToken(context *gin.Context) {
+	var params GetDashboardViaTokenParams
+	var dashboard models.Dashboard
+	var dashboard_insights []models.DashboardInsight
+
+	if err := context.BindQuery(&params); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	lookupResult := database.Database.Where("id = ?", params.DashboardID).Find(&dashboard)
+	if lookupResult.Error == nil {
+		if dashboard.Token != params.Token {
+			context.JSON(http.StatusPreconditionFailed, gin.H{
+				"status": "Not found",
+			})
+			return
+		}
+
+		lookupResult = database.Database.Where("dashboard_id = ?", dashboard.ID).Find(&dashboard_insights)
+
+		insightIDs := []int{}
+		for _, dashboard_insight := range dashboard_insights {
+			insightIDs = append(insightIDs, dashboard_insight.InsightID)
+		}
+
+		context.JSON(http.StatusOK, gin.H{
+			"dashboard": map[string]interface{}{
+				"id":         dashboard.ID,
+				"title":      dashboard.Title,
+				"insightIDs": insightIDs,
+			},
+		})
+	} else {
+		context.JSON(http.StatusPreconditionFailed, gin.H{
+			"status": "Not found",
+		})
+	}
+}

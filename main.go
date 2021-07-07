@@ -80,6 +80,9 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 
 	auth.POST("/dashboard_insights", controllers.AddInsightToDashboard)
 
+	router.GET("/dashboards", controllers.GetDashboardViaToken)
+	router.GET("/dashboard_insights", controllers.GetInsightsAggregationViaToken)
+
 	apiGateway := router.Group("/api")
 	apiGateway.Use(apiGatewayMiddleware)
 

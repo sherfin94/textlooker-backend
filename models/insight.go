@@ -64,18 +64,20 @@ type visualizeTextSet struct {
 	Texts []string `json:"visualizeTexts"`
 }
 
-func (insight *Insight) Aggregation() (aggregation map[string]interface{}, err error) {
+func (insight *Insight) Aggregation() (result map[string]interface{}, err error) {
 	var filter filterObject
 	var visualizeTexts visualizeTextSet
 
+	result = map[string]interface{}{}
+
 	err = json.Unmarshal([]byte(insight.Filter), &filter)
 	if err != nil {
-		return aggregation, err
+		return result, err
 	}
 
 	err = json.Unmarshal([]byte(insight.VisualizeTexts), &visualizeTexts)
 	if err != nil {
-		return aggregation, err
+		return result, err
 	}
 
 	filterItems := []elastic.FilterItem{}
@@ -83,21 +85,24 @@ func (insight *Insight) Aggregation() (aggregation map[string]interface{}, err e
 		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
 	}
 
+	var aggregation map[string]interface{}
 	if insight.DateRangeAvailable {
 		aggregation, err = GetAggregation(
-			"*", filterItems,
+			"", filterItems,
 			insight.StartDate, insight.EndDate,
 			insight.SourceID,
 		)
 	} else {
 		aggregation, err = GetDatelessAggregation(
-			"*", filterItems,
+			"", filterItems,
 			insight.SourceID,
 		)
 	}
 
-	aggregation["visualizeTexts"] = visualizeTexts.Texts
-	aggregation["visualizationType"] = insight.VisualizationType
+	result["visualizeTexts"] = visualizeTexts.Texts
+	result["visualizationType"] = insight.VisualizationType
+	result["data"] = aggregation[insight.LookForHandle]
+	result["title"] = insight.Title
 
-	return aggregation, err
+	return result, err
 }

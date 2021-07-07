@@ -39,16 +39,16 @@ analysed text count : done
 visualization selection: done
 tabular display: done
 live => reload button : done
-save
-oiling
-dashboard
+save : done
+oiling : done
+dashboard : done
 flow display: paused and postponed.
 
-remove unprintable characters before processing text
-dont show comma on hovering bars
+remove unprintable characters before processing text : done
+dont show comma on hovering bars : done
+different icons for tokens : done
 filteritem hover tooltip
 set min and max date at date select
-different icons for tokens
 date_tokens
 is date filter working properly?
 are parsed dates being saved in the server properly?
