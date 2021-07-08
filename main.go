@@ -97,7 +97,7 @@ func main() {
 
 	switch argument {
 	case "migrate":
-		models.ApplyMigrations("gorm", database.Loud)
+		models.ApplyMigrations(os.Getenv("DATABASE_NAME"), database.Loud)
 	case "migrate-test":
 		models.ApplyMigrations("gorm_test", database.Loud)
 	case "run":
@@ -125,6 +125,6 @@ func main() {
 		}
 
 		r := SetupRouter(runMode)
-		r.Run(":8080")
+		r.Run(":80")
 	}
 }

@@ -9,6 +9,8 @@ FROM golang:1.16.5-buster
 
 ENV GO111MODULE=on
 
+ENV DATABASE_NAME=textlooker
+
 WORKDIR /app
 
 COPY go.mod .
