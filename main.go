@@ -102,7 +102,7 @@ func main() {
 		models.ApplyMigrations("gorm_test", database.Loud)
 	case "run":
 		elastic.Initiate()
-		database.ConnectDatabase("gorm", database.Silent)
+		database.ConnectDatabase(os.Getenv("DATABASE_NAME"), database.Silent)
 
 		channel := make(chan kafka.TextSet)
 		go kafka.InitializeProducer(&channel)
