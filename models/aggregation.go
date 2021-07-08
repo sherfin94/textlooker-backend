@@ -118,15 +118,11 @@ func GetPerDateAggregation(
 		endDate, sourceID,
 	)
 
-	log.Println(query.RequestString())
-
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)
 		return counts, err
 	} else {
-		log.Printf("%v", queryResult)
 		counts = CreatePerDateAggregationFromQueryResult(queryResult, field)
-		log.Println(counts)
 	}
 
 	return counts, err
@@ -139,8 +135,6 @@ func GetDatelessAggregation(
 	query := elastic.NewDatelessAggregateAllQuery(
 		searchText, filterItems, sourceID,
 	)
-
-	log.Println(query.RequestString())
 
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)

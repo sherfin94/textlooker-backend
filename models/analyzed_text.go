@@ -56,8 +56,6 @@ func GetAnalyzedTexts(
 	textQuery.Size = 20
 	textQuery.From = from
 
-	log.Println(textQuery.RequestString())
-
 	total = 0
 	totalCountQualification = "not available"
 	if queryResult, err := elastic.Query(textQuery, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
@@ -66,22 +64,12 @@ func GetAnalyzedTexts(
 	} else {
 		for _, hit := range queryResult.Hits.Hits {
 
-			// date, err := time.Parse("2006-01-02T15:04:05-0700", hit.Source.Date)
-			// if err != nil {
-			// 	return analyzedTexts, err
-			// }
-
-			// log.Println("shashi")
-			// log.Println(date.String())
 			analyzedTexts = append(analyzedTexts, AnalyzedText{
 				ID:       hit.ID,
 				Content:  hit.Source.Content,
 				Author:   hit.Source.Author,
 				SourceID: hit.Source.SourceID,
 				Date:     hit.Source.Date.Time,
-				// People:   hit.Source.People,
-				// GPE:      hit.Source.GPE,
-				// Tokens:   hit.Source.Tokens,
 			})
 		}
 		total = queryResult.Hits.Total.Value

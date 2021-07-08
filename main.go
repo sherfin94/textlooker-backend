@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"textlooker-backend/api"
@@ -106,7 +107,24 @@ func main() {
 		channel := make(chan kafka.TextSet)
 		go kafka.InitializeProducer(&channel)
 
-		r := SetupRouter(deployment.Development)
+		var runMode deployment.RunMode
+
+		switch os.Getenv("DEPLOYMENT_MODE") {
+		case "DEVELOPMENT":
+			{
+				runMode = deployment.Development
+			}
+		case "PRODUCTION":
+			{
+				runMode = deployment.Development
+			}
+		default:
+			{
+				log.Fatalf("DEPLOYMENT_MODE is not set")
+			}
+		}
+
+		r := SetupRouter(runMode)
 		r.Run(":8080")
 	}
 }
