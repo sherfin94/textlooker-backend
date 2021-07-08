@@ -15,6 +15,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
 )
 
@@ -125,6 +126,7 @@ func main() {
 		}
 
 		r := SetupRouter(runMode)
+		log.Fatal(autotls.Run(r, "textlooker.com"))
 		r.Run(":80")
 	}
 }

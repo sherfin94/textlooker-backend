@@ -10,6 +10,7 @@ require (
 	github.com/confluentinc/confluent-kafka-go v1.7.0 // indirect
 	github.com/elastic/go-elasticsearch/v8 v8.0.0-20210429082631-bdab472a9cc7 // indirect
 	github.com/gin-contrib/sessions v0.0.3
+	github.com/gin-gonic/autotls v0.0.3 // indirect
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/validator/v10 v10.5.0
 	github.com/jdkato/prose/v2 v2.0.0 // indirect
