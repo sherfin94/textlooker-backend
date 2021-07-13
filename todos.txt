@@ -1,56 +1,37 @@
-Put user tests in a suite
-make tests parallel
 
-set date automatically if not provided
-set expiry date of tokens to 20 minutes
+Tech debt
+---------
 
-SecureCookie should be set to true in auth.go, as well as samesite configurations
-more secure access control headers
-
-fix date format strings
-
-set post limit
+ENV variables for database name and other env specific info
+SameSiteStrictMode
 make sure kafka commit settings are correct
-
 check if create topic is necessary
-
-introduce policies to limit maximum size of messages being passed along and processed across the system
-
 block access to login areas for non-logged in user
-
-date range: done
-large file batched upload: done
-file upload progress: done
-more categories: done
-
-fix issue with filter aggregation : done
-If there are no people, then don't show people on the sidebar: done
-fix filter scrollbar:done
-fix date filter : done
-add token wise aggregation : done
-check security of user trying to aggregate other stuff by passing custom stuff : done
-fix unresponsive crapping when clicking on links: done
-
-display text : done
-keep analysis on store while switching tabs : done
-analysed text count : done
-  * batched processing and saving: done
-  * batched update of text after analysis: done
-visualization selection: done
-tabular display: done
-live => reload button : done
-save : done
-oiling : done
-dashboard : done
-flow display: paused and postponed.
-
-remove unprintable characters before processing text : done
-dont show comma on hovering bars : done
-different icons for tokens : done
 filteritem hover tooltip
 set min and max date at date select
 date_tokens
 is date filter working properly?
 are parsed dates being saved in the server properly?
+release mode for production
+Fix API documentation
+Add author in look for
 
-----------------------------------------
+________________________________________________________
+
+
+Additional features required for production release
+---------------------------------------------------
+Introduce policies to limit maximum size of messages being passed along and processed across the system
+Payment
+Threshold for total number of records added
+Limit number of records in a batch
+Add insights from dashboard itself
+Interactive documentation: tooltips, notifications, textual explainers, detailed placeholders
+Better product documentation in home page
+Mobile version
+Do not allow going to logged in areas without logging in
+
+
+Make data ingestion more robust: text input should not happen if all required fields are not present
+Make processing more robust : processing should not happen if all required fields are not present
+________________________________________________________________________________________________________
