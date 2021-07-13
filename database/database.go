@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,7 +16,9 @@ var Database *gorm.DB
 const Silent, OnlyErrors, Loud = 1, 2, 3
 
 func ConnectDatabase(databaseName string, logMode LogMode) *gorm.DB {
-	dsn := fmt.Sprintln("host=localhost user=looker password=looker dbname=", databaseName, " port=5432 sslmode=disable TimeZone=Asia/Kolkata")
+	username := os.Getenv("DATABASE_USERNAME")
+	password := os.Getenv("DATABASE_PASSWORD")
+	dsn := fmt.Sprintln("host=localhost user=", username, " password=", password, " dbname=", databaseName, " port=5432 sslmode=disable TimeZone=Asia/Kolkata")
 	var err error
 	var logLevel logger.LogLevel
 
