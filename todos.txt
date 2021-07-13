@@ -2,9 +2,6 @@
 Tech debt
 ---------
 
-set min and max date at date select
-is date filter working properly?
-are parsed dates being saved in the server properly?
 Add author in look for
 Fix API documentation
 

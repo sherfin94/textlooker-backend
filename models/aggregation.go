@@ -74,8 +74,6 @@ func GetAggregation(
 		endDate, sourceID, dateAvailableForSource,
 	)
 
-	log.Println(query.RequestString())
-
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)
 		return aggregation, err
