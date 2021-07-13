@@ -2,19 +2,11 @@
 Tech debt
 ---------
 
-ENV variables for database name and other env specific info
-SameSiteStrictMode
-make sure kafka commit settings are correct
-check if create topic is necessary
-block access to login areas for non-logged in user
-filteritem hover tooltip
 set min and max date at date select
-date_tokens
 is date filter working properly?
 are parsed dates being saved in the server properly?
-release mode for production
-Fix API documentation
 Add author in look for
+Fix API documentation
 
 ________________________________________________________
 
@@ -27,6 +19,7 @@ Threshold for total number of records added
 Limit number of records in a batch
 Add insights from dashboard itself
 Interactive documentation: tooltips, notifications, textual explainers, detailed placeholders
+  * filteritem hover tooltip
 Better product documentation in home page
 Mobile version
 Do not allow going to logged in areas without logging in
