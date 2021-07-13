@@ -46,30 +46,6 @@ func CreateGeneralAggregationFromQueryResult(queryResult elastic.QueryResult) (a
 		aggregation[field] = countSet
 	}
 
-	// for _, bucket := range queryResult.AggregationsPart.AuthorAggregation.Buckets {
-	// 	authors = append(authors, CountItem{Value: bucket.Key, Count: bucket.Value})
-	// }
-
-	// for _, bucket := range queryResult.AggregationsPart.PeopleAggregation.Buckets {
-	// 	people = append(people, CountItem{Value: bucket.Key, Count: bucket.Value})
-	// }
-
-	// for _, bucket := range queryResult.AggregationsPart.GPEAggregation.Buckets {
-	// 	gpe = append(gpe, CountItem{Value: bucket.Key, Count: bucket.Value})
-	// }
-
-	// for _, bucket := range queryResult.AggregationsPart.TokenAggregation.Buckets {
-	// 	tokens = append(tokens, CountItem{Value: bucket.Key, Count: bucket.Value})
-	// }
-
-	// for _, bucket := range queryResult.AggregationsPart["PERSON"].(AggregationResultPart) {
-	// 	dates = append(dates, CountItem{Value: util.ParseTimestamp(bucket.Key.(float64)), Count: bucket.Value})
-	// }
-
-	// for _, bucket := range queryResult.AggregationsPart.DateAggregation.Buckets {
-	// 	dates = append(dates, CountItem{Value: util.ParseTimestamp(bucket.Key.(float64)), Count: bucket.Value})
-	// }
-
 	return aggregation
 }
 
@@ -90,13 +66,15 @@ func CreatePerDateAggregationFromQueryResult(queryResult elastic.QueryResult, fi
 
 func GetAggregation(
 	searchText string, filterItems []elastic.FilterItem,
-	startDate time.Time, endDate time.Time, sourceID int,
+	startDate time.Time, endDate time.Time, sourceID int, dateAvailableForSource bool,
 ) (aggregation map[string]interface{}, err error) {
 
 	query := elastic.NewAggregateAllQuery(
 		searchText, filterItems, startDate,
-		endDate, sourceID,
+		endDate, sourceID, dateAvailableForSource,
 	)
+
+	log.Println(query.RequestString())
 
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
 		log.Println(err)
@@ -110,12 +88,12 @@ func GetAggregation(
 
 func GetPerDateAggregation(
 	searchText string, filterItems []elastic.FilterItem,
-	startDate time.Time, endDate time.Time, sourceID int, field string,
+	startDate time.Time, endDate time.Time, sourceID int, field string, dateAvailableForSource bool,
 ) (counts []CountItem, err error) {
 
 	query := elastic.NewAggregateByOneFieldQuery(
 		searchText, filterItems, field, startDate,
-		endDate, sourceID,
+		endDate, sourceID, dateAvailableForSource,
 	)
 
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {
@@ -129,11 +107,11 @@ func GetPerDateAggregation(
 }
 
 func GetDatelessAggregation(
-	searchText string, filterItems []elastic.FilterItem, sourceID int,
+	searchText string, filterItems []elastic.FilterItem, sourceID int, dateAvailableForSource bool,
 ) (aggregation map[string]interface{}, err error) {
 
 	query := elastic.NewDatelessAggregateAllQuery(
-		searchText, filterItems, sourceID,
+		searchText, filterItems, sourceID, dateAvailableForSource,
 	)
 
 	if queryResult, err := elastic.Query(query, deployment.GetEnv("ELASTIC_INDEX_FOR_ANALYZED_TEXT")); err != nil {

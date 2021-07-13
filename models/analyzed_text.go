@@ -48,11 +48,11 @@ func NewAnalyzedText(text Text) (analyzedText AnalyzedText, err error) {
 func GetAnalyzedTexts(
 	searchText string, from int, filterItems []elastic.FilterItem,
 	startDate time.Time, endDate time.Time, sourceID int,
-	dateRangeProvided bool,
+	dateRangeProvided bool, dateAvailableForSource bool,
 ) (analyzedTexts []AnalyzedText, total int, totalCountQualification string, err error) {
 	analyzedTexts = []AnalyzedText{}
 
-	textQuery := elastic.NewAnalyzedTextQuery(searchText, filterItems, startDate, endDate, sourceID, dateRangeProvided)
+	textQuery := elastic.NewAnalyzedTextQuery(searchText, filterItems, startDate, endDate, sourceID, dateRangeProvided, dateAvailableForSource)
 	textQuery.Size = 20
 	textQuery.From = from
 

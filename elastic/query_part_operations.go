@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const DateFormat = "2006-01-02T15:04:05Z-0700"
+const DateFormat = "2006-01-02T15:04:05-0700"
 
 func (textQuery *TextQuery) Buffer() (bytesBuffer bytes.Buffer, err error) {
 	return util.StructToBytesBuffer(textQuery)
@@ -19,7 +19,7 @@ func makeDateRange(startDate time.Time, endDate time.Time) dateRange {
 	}
 }
 
-func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content string, filterItems []FilterItem) []interface{} {
+func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content string, filterItems []FilterItem, dateAvailableForSource bool) []interface{} {
 	var parts []interface{}
 	for _, filterItem := range filterItems {
 
@@ -35,7 +35,11 @@ func generateBasicConditions(requiredDateRange *dateRange, sourceID int, content
 		}
 	}
 	if requiredDateRange != nil {
-		parts = append(parts, rangePart{Range: datePart{Date: *requiredDateRange}})
+		if dateAvailableForSource {
+			parts = append(parts, rangePart{Range: datePart{Date: *requiredDateRange}})
+		} else {
+			parts = append(parts, rangePart{Range: datePart{Date: *requiredDateRange}})
+		}
 	}
 	parts = append(parts, matchPart{Match: sourcePart{SourceID: sourceID}})
 	if content != "" {

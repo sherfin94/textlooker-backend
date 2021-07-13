@@ -85,17 +85,20 @@ func (insight *Insight) Aggregation() (result map[string]interface{}, err error)
 		filterItems = append(filterItems, elastic.FilterItem{Label: item.Label, Text: item.Text})
 	}
 
+	source, _ := GetSourceByID(insight.SourceID)
+
 	var aggregation map[string]interface{}
 	if insight.DateRangeAvailable {
 		aggregation, err = GetAggregation(
 			"", filterItems,
 			insight.StartDate, insight.EndDate,
-			insight.SourceID,
+			insight.SourceID, source.DateAvailable,
 		)
 	} else {
 		aggregation, err = GetDatelessAggregation(
 			"", filterItems,
 			insight.SourceID,
+			source.DateAvailable,
 		)
 	}
 

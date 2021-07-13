@@ -33,7 +33,7 @@ func GetGeneralAggregation(context *gin.Context) {
 
 	aggregation, err := models.GetAggregation(
 		params.Content, filterItems,
-		startDate, endDate, int(source.ID),
+		startDate, endDate, int(source.ID), source.DateAvailable,
 	)
 
 	if err != nil {
@@ -63,7 +63,7 @@ func GetPerDateAggregation(context *gin.Context) {
 
 	counts, err := models.GetPerDateAggregation(
 		params.Content, filterItems,
-		startDate, endDate, int(source.ID), field,
+		startDate, endDate, int(source.ID), field, source.DateAvailable,
 	)
 
 	if err != nil {
@@ -97,7 +97,7 @@ func GetDatelessGeneralAggregation(context *gin.Context) {
 	}
 	aggregation, err := models.GetDatelessAggregation(
 		params.Content, filterItems,
-		int(source.ID),
+		int(source.ID), source.DateAvailable,
 	)
 
 	if err != nil {

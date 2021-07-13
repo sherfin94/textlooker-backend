@@ -104,7 +104,7 @@ func GetTexts(context *gin.Context) {
 		textSearchParams.Content,
 		filterItems,
 		startDate, endDate,
-		int(source.ID),
+		int(source.ID), source.DateAvailable,
 	)
 
 	if err != nil {

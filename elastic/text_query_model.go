@@ -58,6 +58,10 @@ type datePart struct {
 	Date dateRange `json:"date"`
 }
 
+type updatedAtPart struct {
+	UpdatedAt dateRange `json:"updated_at"`
+}
+
 type aggregationGenericFieldPart struct {
 	Field aggregation `json:"field_value"`
 }

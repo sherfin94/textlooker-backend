@@ -78,8 +78,8 @@ func BulkSaveText(textSet []Text) (int, error) {
 	return int(countSuccessful), err
 }
 
-func GetTexts(content string, filterItems []elastic.FilterItem, dateStart time.Time, dateEnd time.Time, sourceID int) (texts []Text, err error) {
-	textQuery := elastic.NewTextQuery(content, filterItems, dateStart, dateEnd, sourceID)
+func GetTexts(content string, filterItems []elastic.FilterItem, dateStart time.Time, dateEnd time.Time, sourceID int, dateAvailableForSource bool) (texts []Text, err error) {
+	textQuery := elastic.NewTextQuery(content, filterItems, dateStart, dateEnd, sourceID, dateAvailableForSource)
 	texts = []Text{}
 
 	if err != nil {
@@ -116,8 +116,9 @@ func SendToProcessQueue(textSet []Text) {
 			CreatedAt: text.CreatedAt,
 			UpdatedAt: text.UpdatedAt,
 			DeletedAt: text.DeletedAt,
+			Date:      text.Date.Format("2006-01-02T15:04:05-0700"),
 		}
-		if !text.Date.IsZero() {
+		if text.Date.IsZero() {
 			kafkaText.Date = time.Now().Format("2006-01-02T15:04:05-0700")
 		}
 

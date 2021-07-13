@@ -46,6 +46,7 @@ func GetAnalyzedTexts(context *gin.Context) {
 		startDate, endDate,
 		int(source.ID),
 		analyzedTextSearchParams.StartDate != "",
+		source.DateAvailable,
 	)
 
 	if err != nil {
