@@ -32,6 +32,7 @@ func SetupRouter(runMode deployment.RunMode) *gin.Engine {
 		gin.SetMode(gin.ReleaseMode)
 		router = gin.New()
 	case deployment.Production:
+		gin.SetMode(gin.ReleaseMode)
 		router = gin.New()
 	}
 
@@ -114,10 +115,14 @@ func main() {
 		case "DEVELOPMENT":
 			{
 				runMode = deployment.Development
+				router := SetupRouter(runMode)
+				router.Run(":8080")
 			}
 		case "PRODUCTION":
 			{
-				runMode = deployment.Development
+				runMode = deployment.Production
+				router := SetupRouter(runMode)
+				log.Fatal(autotls.Run(router, "api.textlooker.com"))
 			}
 		default:
 			{
@@ -125,8 +130,5 @@ func main() {
 			}
 		}
 
-		r := SetupRouter(runMode)
-		log.Fatal(autotls.Run(r, "textlooker.com"))
-		r.Run(":80")
 	}
 }
