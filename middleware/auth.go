@@ -29,11 +29,11 @@ func GenerateJWTAuthMiddleware() *jwt.GinJWTMiddleware {
 		MaxRefresh:     30 * time.Minute,
 		IdentityKey:    identityKey,
 		SendCookie:     true,
-		SecureCookie:   true,    //non HTTPS dev environments
-		CookieHTTPOnly: true,    // JS can't modify
-		CookieName:     "token", // default jwt
+		SecureCookie:   true,
+		CookieHTTPOnly: true,
+		CookieName:     "token",
 		TokenLookup:    "cookie:token",
-		CookieSameSite: http.SameSiteNoneMode, //SameSiteDefaultMode, SameSiteLaxMode, SameSiteStrictMode, SameSiteNoneMode
+		CookieSameSite: http.SameSiteNoneMode,
 
 		LoginResponse: func(context *gin.Context, status int, s string, t time.Time) {
 			context.AbortWithStatus(status)
