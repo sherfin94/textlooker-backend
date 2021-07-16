@@ -1,15 +1,10 @@
-
 Tech debt
----------
-
-Add author in look for
-Fix API documentation
-
-________________________________________________________
+_________
 
 
 Additional features required for production release
----------------------------------------------------
+___________________________________________________
+
 Introduce policies to limit maximum size of messages being passed along and processed across the system
 Payment
 Threshold for total number of records added
@@ -18,10 +13,11 @@ Add insights from dashboard itself
 Interactive documentation: tooltips, notifications, textual explainers, detailed placeholders
   * filteritem hover tooltip
 Better product documentation in home page
-Mobile version
-Do not allow going to logged in areas without logging in
 
 
-Make data ingestion more robust: text input should not happen if all required fields are not present
-Make processing more robust : processing should not happen if all required fields are not present
+
+
 ________________________________________________________________________________________________________
+
+
+Mobile version: done
