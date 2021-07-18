@@ -5,19 +5,17 @@ _________
 Additional features required for production release
 ___________________________________________________
 
-Introduce policies to limit maximum size of messages being passed along and processed across the system
 Payment
 Threshold for total number of records added
-Limit number of records in a batch
 Add insights from dashboard itself
-Interactive documentation: tooltips, notifications, textual explainers, detailed placeholders
-  * filteritem hover tooltip
-Better product documentation in home page
 
-
-
+Limit number of records in a batch
+Introduce policies to limit maximum size of messages being passed along and processed across the system
 
 ________________________________________________________________________________________________________
 
 
+Interactive documentation: tooltips, notifications, textual explainers, detailed placeholders
+  * filteritem hover tooltip
+Better product documentation in home page : on hold
 Mobile version: done

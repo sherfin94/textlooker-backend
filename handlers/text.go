@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"strconv"
 	"textlooker-backend/models"
 	"textlooker-backend/util"
@@ -22,7 +23,8 @@ func ProcessTextBatch(batch TextBatch, source *models.Source) (int, error) {
 	var lastOccuredError error
 	var textSet []models.Text
 	var date time.Time
-	for _, handlerText := range batch.TextSet {
+	for i := 0; i < 1000 && i < len(batch.TextSet); i++ {
+		handlerText := batch.TextSet[i]
 		if source.DateAvailable {
 			dateAsInteger, err := strconv.ParseInt(handlerText.DateAsString, 10, 64)
 			if err == nil {
@@ -44,6 +46,11 @@ func ProcessTextBatch(batch TextBatch, source *models.Source) (int, error) {
 			UpdatedAt: time.Now(),
 		}
 		textSet = append(textSet, text)
+	}
+
+	if len(batch.TextSet) > 1000 {
+		lastOccuredError = errors.New("batch size greater than 1000. please send data in batches of 1000")
+		return 0, lastOccuredError
 	}
 
 	count, err := models.BulkSaveText(textSet)
