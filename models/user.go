@@ -9,10 +9,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Email              string           `gorm:"not null;unique" validate:"required,email"`
-	EncryptedPassword  string           `gorm:"not null" validate:"required"`
-	UserRegistrationID int              `gorm:"not null"`
-	UserRegistration   UserRegistration `gorm:"not null" validate:"structonly"`
+	Email                      string           `gorm:"not null;unique" validate:"required,email"`
+	EncryptedPassword          string           `gorm:"not null" validate:"required"`
+	UserRegistrationID         int              `gorm:"not null"`
+	UserRegistration           UserRegistration `gorm:"not null" validate:"structonly"`
+	TextRecordUploadsRemaining int              `gorm:"not null,default:5000" validate:"required"`
 }
 
 func (user *User) BeforeSave(database *gorm.DB) (err error) {

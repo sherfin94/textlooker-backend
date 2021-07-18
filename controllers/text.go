@@ -28,16 +28,22 @@ func PostText(context *gin.Context) {
 	var source models.Source
 	var batchParams BatchTextParams
 	lastOccuredError := ""
-	user, _ := context.Get("user")
+	userReference, _ := context.Get("user")
+	user := userReference.(*models.User)
 
 	if err := context.ShouldBindJSON(&batchParams); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	database.Database.Where("user_id = ? and id = ?", user.(*models.User).ID, batchParams.SourceID).Find(&source)
+	database.Database.Where("user_id = ? and id = ?", user.ID, batchParams.SourceID).Find(&source)
 	if source.ID == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Source could not be validated"})
+		return
+	}
+
+	if user.TextRecordUploadsRemaining <= 0 {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "You do not have enough record uploads remaining to upload this batch. Please upgrade your plan."})
 		return
 	}
 
@@ -56,11 +62,15 @@ func PostText(context *gin.Context) {
 
 	if err != nil {
 		lastOccuredError = err.Error()
+	} else {
+		user.TextRecordUploadsRemaining -= count
+		database.Database.Save(user)
 	}
 
 	context.JSON(http.StatusOK, gin.H{
 		"savedTextCount":   count,
 		"lastOccuredError": lastOccuredError,
+		"uploadsRemaining": user.TextRecordUploadsRemaining,
 	})
 }
 

@@ -36,9 +36,15 @@ func ProcessTextBatch(batch TextBatch, source *models.Source) (int, error) {
 			date = time.Now()
 
 		}
+
+		authors := []string{}
+		for _, authorName := range handlerText.Author {
+			authors = append(authors, truncateString(authorName, 1000))
+		}
+
 		text := models.Text{
-			Content:   handlerText.Content,
-			Author:    handlerText.Author,
+			Content:   truncateString(handlerText.Content, 10000),
+			Author:    authors,
 			Date:      date,
 			SourceID:  int(source.ID),
 			Analyzed:  false,
@@ -61,4 +67,12 @@ func ProcessTextBatch(batch TextBatch, source *models.Source) (int, error) {
 	}
 
 	return count, lastOccuredError
+}
+
+func truncateString(str string, num int) string {
+	bnoden := str
+	if len(str) > num {
+		bnoden = str[0:num]
+	}
+	return bnoden
 }

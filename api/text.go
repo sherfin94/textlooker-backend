@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"textlooker-backend/database"
 	"textlooker-backend/handlers"
 	"textlooker-backend/models"
 
@@ -22,6 +24,7 @@ type TextParams struct {
 
 func PostText(context *gin.Context) {
 	var source *models.Source
+	var user *models.User
 	var batchParams BatchTextParams
 	lastOccuredError := ""
 
@@ -32,6 +35,14 @@ func PostText(context *gin.Context) {
 
 	sourceData, _ := context.Get("source")
 	source = sourceData.(*models.Source)
+
+	database.Database.Where("id = ?", source.UserID).Find(&user)
+
+	fmt.Println("Records remaining ", user.TextRecordUploadsRemaining)
+	if user.TextRecordUploadsRemaining <= 0 {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "You do not have enough record uploads remaining to upload this batch. Please upgrade your plan."})
+		return
+	}
 
 	count := 0
 
@@ -50,10 +61,14 @@ func PostText(context *gin.Context) {
 
 	if err != nil {
 		lastOccuredError = err.Error()
+	} else {
+		user.TextRecordUploadsRemaining -= count
+		database.Database.Save(user)
 	}
 
 	context.JSON(http.StatusOK, gin.H{
 		"savedTextCount":   count,
 		"lastOccuredError": lastOccuredError,
+		"uploadsRemaining": user.TextRecordUploadsRemaining,
 	})
 }
