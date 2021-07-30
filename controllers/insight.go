@@ -21,6 +21,7 @@ type InsightParams struct {
 	StartDate          string `json:"startDate" binding:"required"`
 	EndDate            string `json:"endDate" binding:"required"`
 	DateRangeAvailable bool   `json:"dateRangeAvailable"`
+	Description        string `json:"description" binding:"required"`
 }
 
 func PostInsight(context *gin.Context) {
@@ -68,6 +69,7 @@ func PostInsight(context *gin.Context) {
 		params.VisualizationType,
 		params.DateRangeAvailable,
 		int(source.ID),
+		params.Description,
 	); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -115,6 +117,7 @@ func GetInsights(context *gin.Context) {
 			"endDate":            insight.EndDate.Format(insightDateFormat),
 			"dateRangeAvailable": insight.DateRangeAvailable,
 			"visualizationType":  insight.VisualizationType,
+			"description":        insight.Description,
 		})
 	}
 

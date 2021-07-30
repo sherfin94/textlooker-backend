@@ -21,6 +21,7 @@ type Insight struct {
 	StartDate          time.Time `gorm:"not null" validate:"required"`
 	EndDate            time.Time `gorm:"not null" validate:"required"`
 	DateRangeAvailable bool      `gorm:"not null"`
+	Description        string
 }
 
 func (insight *Insight) BeforeSave(database *gorm.DB) (err error) {
@@ -34,7 +35,7 @@ func (insight *Insight) BeforeSave(database *gorm.DB) (err error) {
 	return nil
 }
 
-func NewInsight(title string, filter string, lookForHandle string, visualizeTexts string, startDate time.Time, endDate time.Time, visualizationType string, dateRangeAvailable bool, sourceID int) (*Insight, error) {
+func NewInsight(title string, filter string, lookForHandle string, visualizeTexts string, startDate time.Time, endDate time.Time, visualizationType string, dateRangeAvailable bool, sourceID int, description string) (*Insight, error) {
 	insight := &Insight{
 		Title:              title,
 		LookForHandle:      lookForHandle,
@@ -45,6 +46,7 @@ func NewInsight(title string, filter string, lookForHandle string, visualizeText
 		EndDate:            endDate,
 		DateRangeAvailable: dateRangeAvailable,
 		VisualizationType:  visualizationType,
+		Description:        description,
 	}
 
 	result := database.Database.Create(insight)
@@ -106,6 +108,7 @@ func (insight *Insight) Aggregation() (result map[string]interface{}, err error)
 	result["visualizationType"] = insight.VisualizationType
 	result["data"] = aggregation[insight.LookForHandle]
 	result["title"] = insight.Title
+	result["description"] = insight.Description
 
 	return result, err
 }
