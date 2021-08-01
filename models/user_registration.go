@@ -36,9 +36,16 @@ func (userRegistration *UserRegistration) BeforeSave(database *gorm.DB) (err err
 }
 
 func NewUserRegistration(email string, password string) (*UserRegistration, error) {
-	userRegistration := &UserRegistration{
+	var userRegistration *UserRegistration
+
+	otp, err := util.GenerateToken(5)
+	if err != nil {
+		return userRegistration, err
+	}
+
+	userRegistration = &UserRegistration{
 		Email:             email,
-		VerificationToken: util.GenerateToken(),
+		VerificationToken: otp,
 		EncryptedPassword: password,
 	}
 

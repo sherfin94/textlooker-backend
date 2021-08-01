@@ -2,11 +2,21 @@ package util
 
 import (
 	"crypto/rand"
-	"fmt"
 )
 
-func GenerateToken() string {
-	b := make([]byte, 10)
-	rand.Read(b)
-	return fmt.Sprintf("%x", b)
+const otpChars = "1234567890"
+
+func GenerateToken(length int) (string, error) {
+	buffer := make([]byte, length)
+	_, err := rand.Read(buffer)
+	if err != nil {
+		return "", err
+	}
+
+	otpCharsLength := len(otpChars)
+	for i := 0; i < length; i++ {
+		buffer[i] = otpChars[int(buffer[i])%otpCharsLength]
+	}
+
+	return string(buffer), nil
 }

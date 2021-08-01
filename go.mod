@@ -15,6 +15,7 @@ require (
 	github.com/go-playground/validator/v10 v10.5.0
 	github.com/jdkato/prose/v2 v2.0.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/pquerna/otp v1.3.0
 	github.com/sendgrid/rest v2.6.3+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.9.0+incompatible
 	github.com/stretchr/testify v1.7.0
