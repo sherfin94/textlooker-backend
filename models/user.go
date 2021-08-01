@@ -30,9 +30,10 @@ func (user *User) BeforeSave(database *gorm.DB) (err error) {
 
 func NewUser(email string, userRegistration UserRegistration) (*User, error) {
 	user := &User{
-		Email:             email,
-		EncryptedPassword: userRegistration.EncryptedPassword,
-		UserRegistration:  userRegistration,
+		Email:                      email,
+		EncryptedPassword:          userRegistration.EncryptedPassword,
+		UserRegistration:           userRegistration,
+		TextRecordUploadsRemaining: 5000,
 	}
 
 	result := database.Database.Create(user)
