@@ -5,10 +5,10 @@ _________
 Additional features required for production release
 ___________________________________________________
 
-Better signup code
+Limit for manual and file entry
+
 Payment
 Deploy to AWS: Single good server, install ES, Kafka everything on it. Use kubernetes
-
 Mail should not go to spam
 
 
@@ -16,7 +16,7 @@ ________________________________________________________________________________
 
 
 
-Limit for manual and file entry
+Better signup code
 Optimize design of login/signup stage
 Description on insights
 Introduce policies to limit maximum size of messages being passed along and processed across the system

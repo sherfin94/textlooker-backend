@@ -40,3 +40,12 @@ func PostUser(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"status": "User created"})
 }
+
+func GetUser(context *gin.Context) {
+	user, _ := context.Get("user")
+
+	context.JSON(http.StatusOK, gin.H{
+		"textRecordUploadsRemaining": user.(*models.User).TextRecordUploadsRemaining,
+		"emailID":                    user.(*models.User).Email,
+	})
+}
